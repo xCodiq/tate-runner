@@ -16,20 +16,21 @@ public final class SplashScreen extends TateGameScreen {
 	@Override
 	public void render() {
 		// Draw the title
-		this.drawCenteredText(Color.decode("#2be3ff"), 60f, "WELCOME TO TATE RUNNER");
+		final String title = "WELCOME TO TATE RUNNER";
+		this.drawCenteredText(0, 5, Color.decode("#034954"), 60f, title); // shadow
+		this.drawCenteredText(Color.decode("#2be3ff"), 60f, title); // text
 
 		// Draw the subtitle
-		this.drawCenteredAnimatedText(0, 35, 3000, Color.WHITE, 20f,
-				"Tourner dans le vide, vide",
-				"Tourner dans le vide, il me fait tourner",
-				"Dans le vide, vide, vide",
-				"Tourner, tourner dans le vide",
-				"Tourner dans le vide, il me fait tourner");
+		this.drawCenteredAnimatedText(0, 35, 350, Color.WHITE, 20f,
+				">  Press SPACE to enter the game  <",
+				">  Press SPACE to enter the game  <",
+				">  Press SPACE to enter the game  <",
+				"> Press SPACE to enter the game <");
 	}
 
 	@Keystroke
 	public void keystroke(KeyEvent keyEvent) {
-		if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		if (keyEvent.getKeyCode() == KeyEvent.VK_SPACE) {
 			this.tateRunner.getManager(ScreenManager.class).showScreen(TestScreen.class);
 
 		} else if (keyEvent.getKeyCode() == KeyEvent.VK_DELETE) {
