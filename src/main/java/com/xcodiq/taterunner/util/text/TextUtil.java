@@ -11,6 +11,7 @@ import java.util.Map;
 public final class TextUtil {
 
 	public static final Font DEFAULT_FONT;
+
 	private static final Map<Integer, Pair<AnimatedText, Integer>> currentAnimatedTextIndexes = new HashMap<>();
 	private static final Map<Integer, Long> currentTimings = new HashMap<>();
 
@@ -35,7 +36,7 @@ public final class TextUtil {
 	}
 
 	public static void drawCenteredText(Graphics2D graphics, int width, int height, int xOffset, int yOffset, Color color, float size, String text) {
-		graphics.setFont(Resources.fonts().get("font/slkscr.ttf", size));
+		graphics.setFont(DEFAULT_FONT.deriveFont(size));
 		graphics.setColor(color);
 
 		final FontMetrics metrics = graphics.getFontMetrics(graphics.getFont());
@@ -56,7 +57,7 @@ public final class TextUtil {
 	}
 
 	public static void drawCenteredAnimatedText(Graphics2D graphics, int width, int height, int xOffset, int yOffset, int interval, Color color, float size, String... frames) {
-		if (frames.length < 1) return;
+		if (graphics == null || frames.length < 1) return;
 
 		final AnimatedText animatedText = new AnimatedText(xOffset, yOffset, frames);
 		final int hash = animatedText.hashCode();
@@ -73,14 +74,14 @@ public final class TextUtil {
 	}
 
 	public static void drawAnimatedText(Graphics2D graphics, int x, int y, int interval, Color color, float size, String... frames) {
-		if (frames.length < 1) return;
+		if (graphics == null || frames.length < 1) return;
 
 		final AnimatedText animatedText = new AnimatedText(x, y, frames);
 		final int hash = animatedText.hashCode();
 
 		final Pair<AnimatedText, Integer> animatedPair = currentAnimatedTextIndexes.computeIfAbsent(hash, at -> new Pair<>(animatedText, 0));
 
-		graphics.setFont(Resources.fonts().get("font/slkscr.ttf", size));
+		graphics.setFont(DEFAULT_FONT.deriveFont(size));
 		graphics.setColor(color);
 
 		for (int i = 0; i < frames.length; i++) {

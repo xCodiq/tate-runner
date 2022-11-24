@@ -1,24 +1,28 @@
 package com.xcodiq.taterunner.screen;
 
-import de.gurkenlabs.litiengine.graphics.TextRenderer;
-import de.gurkenlabs.litiengine.gui.screens.GameScreen;
-import de.gurkenlabs.litiengine.resources.Resources;
+import com.xcodiq.taterunner.TateRunnerGame;
+import com.xcodiq.taterunner.keystroke.Keystroke;
+import com.xcodiq.taterunner.manager.ScreenManager;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
-public final class TestScreen extends GameScreen {
+public final class TestScreen extends TateGameScreen {
 
-	public TestScreen() {
-		super("Test");
+	public TestScreen(TateRunnerGame tateRunner) {
+		super(tateRunner, "Test");
 	}
 
 	@Override
-	public void render(Graphics2D g) {
-		super.render(g);
+	public void render() {
+		this.drawCenteredText(Color.WHITE, 30f, "This is a test screen!");
+	}
 
-		g.setFont(Resources.fonts().get("font/slkscr.ttf", 40f));
-		g.setColor(Color.WHITE);
-
-		TextRenderer.render(g, "Hello", 100, 270);
+	@Keystroke
+	public void keystroke(KeyEvent keyEvent) {
+		if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			final ScreenManager screenManager = this.tateRunner.getManager(ScreenManager.class);
+			screenManager.showScreen(SplashScreen.class);
+		}
 	}
 }

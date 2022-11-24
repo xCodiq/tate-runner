@@ -12,6 +12,7 @@ public final class TateRunnerBootstrap {
 			Runtime.getRuntime().addShutdownHook(new Thread(tateRunner::stopGame));
 		} catch (Throwable throwable) {
 			throwable.printStackTrace();
+			System.exit(throwable.hashCode());
 		}
 	}
 }

@@ -1,25 +1,11 @@
 package com.xcodiq.taterunner.keystroke;
 
-import com.xcodiq.taterunner.TateRunnerGame;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.awt.event.KeyEvent;
-import java.util.function.Consumer;
-
-public final class Keystroke {
-
-	private final KeyEvent keyEvent;
-	private final Consumer<TateRunnerGame> clickConsumer;
-
-	public Keystroke(KeyEvent keyEvent, Consumer<TateRunnerGame> clickConsumer) {
-		this.keyEvent = keyEvent;
-		this.clickConsumer = clickConsumer;
-	}
-
-	public KeyEvent getKeyEvent() {
-		return keyEvent;
-	}
-
-	public Consumer<TateRunnerGame> getClickConsumer() {
-		return clickConsumer;
-	}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Keystroke {
 }

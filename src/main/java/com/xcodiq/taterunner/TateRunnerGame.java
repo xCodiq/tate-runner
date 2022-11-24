@@ -1,7 +1,10 @@
 package com.xcodiq.taterunner;
 
+import com.xcodiq.taterunner.logger.Logger;
+import com.xcodiq.taterunner.manager.KeystrokeManager;
 import com.xcodiq.taterunner.manager.Manager;
 import com.xcodiq.taterunner.manager.ScreenManager;
+import com.xcodiq.taterunner.screen.SplashScreen;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.GameInfo;
 import de.gurkenlabs.litiengine.configuration.DisplayMode;
@@ -16,7 +19,7 @@ import java.util.stream.Stream;
 public class TateRunnerGame implements IGame {
 
 	// set to true to enable debug mode
-	public static boolean DEBUG_MODE = false;
+	public static boolean DEBUG_MODE = true;
 	private static TateRunnerGame INSTANCE = null;
 
 	private final Map<Class<? extends Manager>, Manager> registeredManagers = new HashMap<>();
@@ -47,28 +50,32 @@ public class TateRunnerGame implements IGame {
 		this.registerManagers();
 
 		// Set the default window resolution and window icon, and other default window/display settings
+		Game.config().graphics().setDisplayMode(DisplayMode.FULLSCREEN);
 		Game.window().setResolution(Resolution.Ratio16x9.RES_1920x1080);
 		Game.window().setIcon(Resources.images().get("icon/andrew_tate_icon.jpg"));
 
 		// Start the actual game
 		Game.start();
 
-		// Show the default splash screen
-//		final ScreenManager screenManager = this.getManager(ScreenManager.class);
-//		screenManager.showScreen(SplashScreen.class);
-
+		// Set starting screen as the splash screen
+		final ScreenManager screenManager = this.getManager(ScreenManager.class);
+		screenManager.setCurrentScreen(SplashScreen.class);
 	}
 
 	@Override
 	public void stopGame() {
+		Logger.log("Stopping tate-runner...");
 
+		// Disable all the registered managers
+		this.registeredManagers.forEach((aClass, manager) -> manager.disable());
 	}
 
 	@Override
 	public void registerManagers() {
 		// Make a stream of all the managers to register
 		Stream.of(
-				new ScreenManager(this)
+				new ScreenManager(this),
+				new KeystrokeManager(this)
 		).forEach(manager -> {
 			// Enable the manager
 			manager.enable();
