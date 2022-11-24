@@ -26,7 +26,7 @@ public class TateRunnerGame implements IGame {
 		INSTANCE = this;
 	}
 
-	public static TateRunnerGame getINSTANCE() {
+	public static TateRunnerGame getInstance() {
 		if (INSTANCE == null) throw new IllegalStateException("Cannot access instance; instance might be null");
 		return INSTANCE;
 	}
@@ -49,7 +49,6 @@ public class TateRunnerGame implements IGame {
 		// Set the default window resolution and window icon, and other default window/display settings
 		Game.window().setResolution(Resolution.Ratio16x9.RES_1920x1080);
 		Game.window().setIcon(Resources.images().get("icon/andrew_tate_icon.jpg"));
-
 
 		// Start the actual game
 		Game.start();
