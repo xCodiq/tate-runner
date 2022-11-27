@@ -1,6 +1,7 @@
-package com.xcodiq.taterunner.manager;
+package com.xcodiq.taterunner.manager.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
+import com.xcodiq.taterunner.manager.Manager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import de.gurkenlabs.litiengine.input.Input;
 
@@ -18,7 +19,7 @@ public final class KeystrokeManager extends Manager {
 	public void enable() {
 		final ScreenManager screenManager = tateRunnerGame.getManager(ScreenManager.class);
 
-		Input.keyboard().onKeyTyped(keyEvent -> {
+		Input.keyboard().onKeyPressed(keyEvent -> {
 			for (TateGameScreen tateGameScreen : screenManager.getRegisteredScreens().values()) {
 				final Method keystrokeMethod = tateGameScreen.getKeystrokeMethod();
 				if (keystrokeMethod == null || !screenManager.getCurrentScreen().equals(tateGameScreen)) continue;

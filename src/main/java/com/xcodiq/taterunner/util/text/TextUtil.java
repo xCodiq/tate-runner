@@ -35,8 +35,8 @@ public final class TextUtil {
 		drawText(graphics, x, y, DEFAULT_FONT, color, size, text);
 	}
 
-	public static void drawCenteredText(Graphics2D graphics, int width, int height, int xOffset, int yOffset, Color color, float size, String text) {
-		graphics.setFont(DEFAULT_FONT.deriveFont(size));
+	public static void drawCenteredText(Graphics2D graphics, int width, int height, int xOffset, int yOffset, Font font, Color color, float size, String text) {
+		graphics.setFont(font.deriveFont(size));
 		graphics.setColor(color);
 
 		final FontMetrics metrics = graphics.getFontMetrics(graphics.getFont());
@@ -49,14 +49,14 @@ public final class TextUtil {
 	}
 
 	public static void drawCenteredText(Graphics2D graphics, int width, int height, Color color, float size, String text) {
-		drawCenteredText(graphics, width, height, 0, 0, color, size, text);
+		drawCenteredText(graphics, width, height, 0, 0, DEFAULT_FONT.deriveFont(size), color, size, text);
 	}
 
-	public static void drawCenteredAnimatedText(Graphics2D graphics, int width, int height, int interval, Color color, float size, String... frames) {
-		drawCenteredAnimatedText(graphics, width, height, interval, 0, 0, color, size, frames);
+	public static void drawCenteredAnimatedText(Graphics2D graphics, int width, int height, int interval, Font font, Color color, float size, String... frames) {
+		drawCenteredAnimatedText(graphics, width, height, interval, 0, 0, font, color, size, frames);
 	}
 
-	public static void drawCenteredAnimatedText(Graphics2D graphics, int width, int height, int xOffset, int yOffset, int interval, Color color, float size, String... frames) {
+	public static void drawCenteredAnimatedText(Graphics2D graphics, int width, int height, int xOffset, int yOffset, int interval, Font font, Color color, float size, String... frames) {
 		if (graphics == null || frames.length < 1) return;
 
 		final AnimatedText animatedText = new AnimatedText(xOffset, yOffset, frames);
@@ -66,14 +66,14 @@ public final class TextUtil {
 
 		for (int i = 0; i < frames.length; i++) {
 			if (animatedPair.getSecond() == i) {
-				drawCenteredText(graphics, width, height, xOffset, yOffset, color, size, animatedText.getFrame(i));
+				drawCenteredText(graphics, width, height, xOffset, yOffset, font.deriveFont(size), color, size, animatedText.getFrame(i));
 			}
 		}
 
 		updateAnimatedText(interval, animatedText, hash, animatedPair, frames);
 	}
 
-	public static void drawAnimatedText(Graphics2D graphics, int x, int y, int interval, Color color, float size, String... frames) {
+	public static void drawAnimatedText(Graphics2D graphics, int x, int y, int interval, Font font, Color color, float size, String... frames) {
 		if (graphics == null || frames.length < 1) return;
 
 		final AnimatedText animatedText = new AnimatedText(x, y, frames);
@@ -81,7 +81,7 @@ public final class TextUtil {
 
 		final Pair<AnimatedText, Integer> animatedPair = currentAnimatedTextIndexes.computeIfAbsent(hash, at -> new Pair<>(animatedText, 0));
 
-		graphics.setFont(DEFAULT_FONT.deriveFont(size));
+		graphics.setFont(font.deriveFont(size));
 		graphics.setColor(color);
 
 		for (int i = 0; i < frames.length; i++) {

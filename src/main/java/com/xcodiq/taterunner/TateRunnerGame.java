@@ -1,12 +1,11 @@
 package com.xcodiq.taterunner;
 
 import com.xcodiq.taterunner.logger.Logger;
-import com.xcodiq.taterunner.manager.KeystrokeManager;
 import com.xcodiq.taterunner.manager.Manager;
-import com.xcodiq.taterunner.manager.ScreenManager;
-import com.xcodiq.taterunner.screen.SplashScreen;
+import com.xcodiq.taterunner.manager.implementation.KeystrokeManager;
+import com.xcodiq.taterunner.manager.implementation.ScreenManager;
+import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import de.gurkenlabs.litiengine.Game;
-import de.gurkenlabs.litiengine.GameInfo;
 import de.gurkenlabs.litiengine.configuration.DisplayMode;
 import de.gurkenlabs.litiengine.gui.screens.GameScreen;
 import de.gurkenlabs.litiengine.gui.screens.Resolution;
@@ -17,6 +16,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class TateRunnerGame implements IGame {
+
+	public static final int WIDTH = 1920, HEIGHT = 1080;
 
 	// set to true to enable debug mode
 	public static boolean DEBUG_MODE = true;
@@ -37,11 +38,10 @@ public class TateRunnerGame implements IGame {
 	@Override
 	public void startGame(String... args) {
 		// Set up the game information
-		final GameInfo info = Game.info();
-		info.setName("Tate Runner");
-		info.setSubTitle("");
-		info.setDevelopers("Elmar", "Tomas", "Nino");
-		info.setVersion("v0.0.1");
+		Game.info().setName("Tate Runner");
+		Game.info().setSubTitle("");
+		Game.info().setDevelopers("Elmar", "Tomas", "Nino");
+		Game.info().setVersion("v0.0.1");
 
 		// Initialize the Game
 		Game.init(args);
@@ -51,7 +51,7 @@ public class TateRunnerGame implements IGame {
 
 		// Set the default window resolution and window icon, and other default window/display settings
 		Game.config().graphics().setDisplayMode(DisplayMode.FULLSCREEN);
-		Game.window().setResolution(Resolution.Ratio16x9.RES_1920x1080);
+		Game.window().setResolution(Resolution.custom(WIDTH, HEIGHT, "default"));
 		Game.window().setIcon(Resources.images().get("icon/andrew_tate_icon.jpg"));
 
 		// Start the actual game

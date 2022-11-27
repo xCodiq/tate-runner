@@ -2,8 +2,10 @@ package com.xcodiq.taterunner.screen;
 
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.keystroke.Keystroke;
-import com.xcodiq.taterunner.util.text.TextEditor;
+import com.xcodiq.taterunner.util.editor.ImageEditor;
+import com.xcodiq.taterunner.util.editor.TextEditor;
 import com.xcodiq.taterunner.util.text.TextUtil;
+import de.gurkenlabs.litiengine.graphics.ImageRenderer;
 import de.gurkenlabs.litiengine.gui.screens.GameScreen;
 
 import java.awt.*;
@@ -12,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
 
-public abstract class TateGameScreen extends GameScreen implements TextEditor {
+public abstract class TateGameScreen extends GameScreen implements TextEditor, ImageEditor {
 
 	protected final TateRunnerGame tateRunner;
 
@@ -54,23 +56,34 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor {
 	}
 
 	@Override
-	public void drawText(int x, int y, Color color, float size, String text) {
-		TextUtil.drawText(this.graphics, x, y, color, size, text);
+	public void drawText(int x, int y, Font font, Color color, float size, String text) {
+		TextUtil.drawText(this.graphics, x, y, font, color, size, text);
 	}
 
 	@Override
-	public void drawCenteredText(int xOffset, int yOffset, Color color, float size, String text) {
-		TextUtil.drawCenteredText(this.graphics, (int) this.getWidth(), (int) this.getHeight(), xOffset, yOffset, color, size, text);
+	public void drawCenteredText(int xOffset, int yOffset, Font font, Color color, float size, String text) {
+		TextUtil.drawCenteredText(this.graphics, (int) this.getWidth(), (int) this.getHeight(),
+				xOffset, yOffset, font, color, size, text);
 	}
 
 	@Override
-	public void drawAnimatedText(int x, int y, int interval, Color color, float size, String... frames) {
-		TextUtil.drawAnimatedText(this.graphics, x, y, interval, color, size, frames);
+	public void drawAnimatedText(int x, int y, int interval, Font font, Color color, float size, String... frames) {
+		TextUtil.drawAnimatedText(this.graphics, x, y, interval, font, color, size, frames);
 	}
 
 	@Override
-	public void drawCenteredAnimatedText(int xOffset, int yOffset, int interval, Color color, float size, String... frames) {
-		TextUtil.drawCenteredAnimatedText(this.graphics, (int) this.getWidth(), (int) this.getHeight(), xOffset, yOffset, interval, color, size, frames);
+	public void drawCenteredAnimatedText(int xOffset, int yOffset, int interval, Font font, Color color, float size, String... frames) {
+		TextUtil.drawCenteredAnimatedText(this.graphics, (int) this.getWidth(), (int) this.getHeight(),
+				xOffset, yOffset, interval, font, color, size, frames);
+	}
+
+	@Override
+	public void drawImage(int x, int y, Image image) {
+		ImageRenderer.render(this.graphics, image, x, y);
+	}
+
+	public void drawBackgroundImage(Image image) {
+		this.drawImage(0, 0, image);
 	}
 
 	@Override

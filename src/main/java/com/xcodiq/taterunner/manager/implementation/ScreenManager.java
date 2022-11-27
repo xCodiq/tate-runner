@@ -1,10 +1,11 @@
-package com.xcodiq.taterunner.manager;
+package com.xcodiq.taterunner.manager.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.logger.Logger;
-import com.xcodiq.taterunner.screen.SplashScreen;
+import com.xcodiq.taterunner.manager.Manager;
+import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.TestScreen;
+import com.xcodiq.taterunner.screen.implementation.RunnerScreen;
 import com.xcodiq.taterunner.util.text.TextUtil;
 import de.gurkenlabs.litiengine.Game;
 
@@ -27,7 +28,7 @@ public final class ScreenManager extends Manager {
 		// Make a stream of all the screens to register
 		Stream.of(
 				new SplashScreen(this.tateRunnerGame),
-				new TestScreen(this.tateRunnerGame)
+				new RunnerScreen(this.tateRunnerGame)
 		).forEach(tateGameScreen -> {
 			// Add the screen to the game
 			this.tateRunnerGame.addScreen(tateGameScreen);
