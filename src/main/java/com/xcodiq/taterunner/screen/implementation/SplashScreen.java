@@ -3,7 +3,9 @@ package com.xcodiq.taterunner.screen.implementation;
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.keystroke.Keystroke;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
+import com.xcodiq.taterunner.manager.implementation.StateManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
+import com.xcodiq.taterunner.state.State;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -31,11 +33,15 @@ public final class SplashScreen extends TateGameScreen {
 	@Keystroke
 	public void keystroke(KeyEvent keyEvent) {
 		switch (keyEvent.getKeyCode()) {
-			case KeyEvent.VK_SPACE ->
-					// Switch to the Runner screen
-					this.tateRunner.getManager(ScreenManager.class).showScreen(RunnerScreen.class);
+			case KeyEvent.VK_SPACE -> {
+				// Set the current state as running
+				this.tateRunner.getManager(StateManager.class).setCurrentState(State.RUNNING);
+
+				// Switch to the Runner screen
+				this.tateRunner.getManager(ScreenManager.class).showScreen(RunnerScreen.class);
+			}
 			case KeyEvent.VK_DELETE ->
-					// Exit the actual application
+				// Exit the actual application
 					System.exit(0);
 		}
 	}

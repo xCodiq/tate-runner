@@ -1,7 +1,7 @@
 package com.xcodiq.taterunner;
 
 import com.xcodiq.taterunner.manager.Manager;
-import de.gurkenlabs.litiengine.gui.screens.GameScreen;
+import com.xcodiq.taterunner.screen.TateGameScreen;
 
 public interface IGame {
 
@@ -13,5 +13,5 @@ public interface IGame {
 
 	<T extends Manager> T getManager(Class<T> typeClass);
 
-	void addScreen(GameScreen gameScreen);
+	void addScreen(TateGameScreen tateGameScreen);
 }
