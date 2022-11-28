@@ -3,7 +3,7 @@ package com.xcodiq.taterunner.screen.render;
 public class BackgroundRender implements Render {
 
 	private final int originalX, originalNextX;
-	private int backgroundX, nextBackgroundX;
+	private double backgroundX, nextBackgroundX;
 
 	public BackgroundRender(int backgroundX, int nextBackgroundX) {
 		this.backgroundX = backgroundX;
@@ -13,27 +13,27 @@ public class BackgroundRender implements Render {
 		this.originalNextX = nextBackgroundX;
 	}
 
-	public int getBackgroundX() {
+	public double getBackgroundX() {
 		return backgroundX;
 	}
 
-	public void setBackgroundX(int backgroundX) {
+	public void setBackgroundX(double backgroundX) {
 		this.backgroundX = backgroundX;
 	}
 
-	public void addBackgroundX(int backgroundX) {
+	public void addBackgroundX(double backgroundX) {
 		this.backgroundX += backgroundX;
 	}
 
-	public int getNextBackgroundX() {
+	public double getNextBackgroundX() {
 		return nextBackgroundX;
 	}
 
-	public void setNextBackgroundX(int nextBackgroundX) {
+	public void setNextBackgroundX(double nextBackgroundX) {
 		this.nextBackgroundX = nextBackgroundX;
 	}
 
-	public void addNextBackgroundX(int nextBackgroundX) {
+	public void addNextBackgroundX(double nextBackgroundX) {
 		this.nextBackgroundX += nextBackgroundX;
 	}
 
@@ -48,5 +48,10 @@ public class BackgroundRender implements Render {
 	public void reset() {
 		this.backgroundX = this.originalX;
 		this.nextBackgroundX = this.originalNextX;
+	}
+
+	public void adjust(double newX) {
+		this.addBackgroundX(newX);
+		this.addNextBackgroundX(newX);
 	}
 }

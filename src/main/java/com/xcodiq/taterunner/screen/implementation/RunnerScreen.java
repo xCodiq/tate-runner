@@ -22,6 +22,7 @@ public final class RunnerScreen extends TateGameScreen {
 	private final Font gameFont;
 
 	private int distanceWalked = 0;
+	private double backgroundSpeed = -3.00;
 
 	public RunnerScreen(TateRunnerGame tateRunner) {
 		super(tateRunner, "Runner");
@@ -52,7 +53,14 @@ public final class RunnerScreen extends TateGameScreen {
 		this.player.render(this);
 
 		// Up the distance walked
-		if (Game.time().now() % 80 == 0) this.distanceWalked++;
+		if (Game.time().now() % (int) (80 * (1 + (this.backgroundSpeed / 100.0))) == 0) {
+			this.distanceWalked++;
+		}
+
+		// Up the backgroundSpeed
+		if (Game.time().now() % 100 == 0) {
+			this.backgroundSpeed -= 0.02;
+		}
 	}
 
 	@Keystroke
@@ -82,11 +90,10 @@ public final class RunnerScreen extends TateGameScreen {
 		this.drawBackgroundAt(backgroundRender.getNextBackgroundX());
 
 		// Adjust the background coordinates
-		backgroundRender.addBackgroundX(-3);
-		backgroundRender.addNextBackgroundX(-3);
+		backgroundRender.adjust(backgroundSpeed);
 	}
 
-	private void drawBackgroundAt(int backgroundX) {
+	private void drawBackgroundAt(double backgroundX) {
 		ImageRenderer.render(this.graphics, this.backgroundImage, backgroundX, 0);
 	}
 }
