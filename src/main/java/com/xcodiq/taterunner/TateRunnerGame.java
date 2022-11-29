@@ -11,25 +11,31 @@ import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import com.xcodiq.taterunner.state.State;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.configuration.DisplayMode;
-import de.gurkenlabs.litiengine.entities.SoundSource;
 import de.gurkenlabs.litiengine.resources.Resources;
-import de.gurkenlabs.litiengine.sound.Sound;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
 public class TateRunnerGame implements IGame {
 
-	public static int WIDTH, HEIGHT;
+	public static float IMAGE_SCALE = 1f;
+	public static int GAME_WIDTH, GAME_HEIGHT, WIDTH, HEIGHT;
 	public static double GRAVITY;
 
 	public static boolean DEBUG_MODE;
 	private static TateRunnerGame INSTANCE;
 
 	static {
-		WIDTH = 1920;
-		HEIGHT = 1080;
+		GAME_WIDTH = 1920;
+		GAME_HEIGHT = 1080;
+
+		final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		WIDTH = screenSize.width;
+		HEIGHT = screenSize.height;
+		IMAGE_SCALE = WIDTH / (float) GAME_WIDTH;
+
 		GRAVITY = 2.3;
 		DEBUG_MODE = false; // set to true to enable debug mode
 		INSTANCE = null;
@@ -73,6 +79,9 @@ public class TateRunnerGame implements IGame {
 
 		// Start the actual game
 		Game.start();
+
+//		JFrame frame = (JFrame) Game.window().getHostControl();
+//		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
 		// Set the current state as started
 		stateManager.setCurrentState(State.STARTED);

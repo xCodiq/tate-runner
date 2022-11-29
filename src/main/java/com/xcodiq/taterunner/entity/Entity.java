@@ -1,5 +1,6 @@
 package com.xcodiq.taterunner.entity;
 
+import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 
 import java.awt.*;
@@ -8,12 +9,16 @@ public abstract class Entity {
 
 	protected final Rectangle boundingBox;
 	protected final double startingX, startingY;
+	protected final int width, height;
 
 	protected double x, y;
 
 	public Entity(double startingX, double startingY, int width, int height) {
-		this.startingX = startingX;
-		this.startingY = startingY;
+		this.width = width;
+		this.height = height;
+
+		this.startingX = startingX * TateRunnerGame.IMAGE_SCALE - width;
+		this.startingY = startingY * TateRunnerGame.IMAGE_SCALE - height;
 
 		this.x = startingX;
 		this.y = startingY;
@@ -48,6 +53,14 @@ public abstract class Entity {
 
 	public void setY(double y) {
 		this.y = y;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 	public boolean collidesWith(Entity entity) {

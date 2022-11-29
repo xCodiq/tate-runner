@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class AnimatedSpriteEntity extends Entity {
 
 	protected final ImageAnimation spriteAnimation;
-	protected Image lastSpriteAnimationFrame;
+	protected BufferedImage lastSpriteAnimationFrame;
 
 	protected Supplier<Boolean> pauseAnimationCondition;
 

@@ -2,22 +2,21 @@ package com.xcodiq.taterunner.screen;
 
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.keystroke.Keystroke;
-import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.screen.button.Button;
 import com.xcodiq.taterunner.util.editor.ImageEditor;
 import com.xcodiq.taterunner.util.editor.TextEditor;
 import com.xcodiq.taterunner.util.text.TextUtil;
 import de.gurkenlabs.litiengine.graphics.ImageRenderer;
 import de.gurkenlabs.litiengine.gui.screens.GameScreen;
-import de.gurkenlabs.litiengine.input.Input;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class TateGameScreen extends GameScreen implements TextEditor, ImageEditor {
 
@@ -73,7 +72,7 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 
 	@Override
 	public void drawCenteredText(int xOffset, int yOffset, Font font, Color color, float size, String text) {
-		TextUtil.drawCenteredText(this.graphics, (int) this.getWidth(), (int) this.getHeight(),
+		TextUtil.drawCenteredText(this.graphics, TateRunnerGame.WIDTH, TateRunnerGame.HEIGHT,
 				xOffset, yOffset, font, color, size, text);
 	}
 
@@ -84,16 +83,18 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 
 	@Override
 	public void drawCenteredAnimatedText(int xOffset, int yOffset, int interval, Font font, Color color, float size, String... frames) {
-		TextUtil.drawCenteredAnimatedText(this.graphics, (int) this.getWidth(), (int) this.getHeight(),
+		TextUtil.drawCenteredAnimatedText(this.graphics, TateRunnerGame.WIDTH, TateRunnerGame.HEIGHT,
 				xOffset, yOffset, interval, font, color, size, frames);
 	}
 
 	@Override
-	public void drawImage(double x, double y, Image image) {
+	public void drawImage(double x, double y, BufferedImage image) {
+//		ImageRenderer.render(this.graphics, image,
+//				x, y * TateRunnerGame.IMAGE_SCALE - image.getHeight());
 		ImageRenderer.render(this.graphics, image, x, y);
 	}
 
-	public void drawBackgroundImage(Image image) {
+	public void drawBackgroundImage(BufferedImage image) {
 		this.drawImage(0, 0, image);
 	}
 

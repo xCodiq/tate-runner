@@ -19,7 +19,7 @@ public final class Player extends AnimatedSpriteEntity {
 	@Override
 	public void render(TateGameScreen tateGameScreen) {
 		if (!this.jumping) super.render(tateGameScreen);
-		else  super.renderLastFrame(tateGameScreen);
+		else super.renderLastFrame(tateGameScreen);
 	}
 
 	@Override

@@ -9,12 +9,14 @@ import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.screen.button.implementation.StoreButton;
 import com.xcodiq.taterunner.screen.render.BackgroundRender;
 import com.xcodiq.taterunner.state.State;
+import com.xcodiq.taterunner.util.image.ImageUtil;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.resources.Resources;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
 public final class RunnerScreen extends TateGameScreen {
 
@@ -23,9 +25,11 @@ public final class RunnerScreen extends TateGameScreen {
 	private final Player player;
 	private final Rock rock;
 
-	private final Image backgroundImage;
+	private final BufferedImage backgroundImage;
 	private final BackgroundRender backgroundRender;
 	private final Font gameFont, gameTextFont;
+
+	private final double floorYCoordinate;
 
 	private int distanceWalked = 0;
 	private double backgroundSpeed = -3.00;
@@ -34,14 +38,17 @@ public final class RunnerScreen extends TateGameScreen {
 		super(tateRunner, "Runner");
 		this.stateManager = tateRunner.getManager(StateManager.class);
 
+		// Determine the floor y coordinate
+		this.floorYCoordinate = 777;
+
 		// Initialize a new player
-		this.player = new Player(580, 578);
+		this.player = new Player(580, this.floorYCoordinate);
 		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() == State.RUNNING);
 
-		this.rock = new Rock(TateRunnerGame.WIDTH + 100, 719);
+		this.rock = new Rock(TateRunnerGame.WIDTH + 100, this.floorYCoordinate);
 
 		// Load the background image
-		this.backgroundImage = Resources.images().get("textures/background/tatetunner-dev-background.png");
+		this.backgroundImage = ImageUtil.loadImage("textures/background/tatetunner-dev-background.png");
 
 		// Set up font
 		this.gameFont = Resources.fonts().get("font/ElecstromRegular-w1y4P.ttf");
@@ -67,11 +74,11 @@ public final class RunnerScreen extends TateGameScreen {
 		// Render the background
 		this.renderBackground();
 
-		// Render the player
-		this.player.render(this);
-
 		// Render the rock
 		this.rock.render(this);
+
+		// Render the player
+		this.player.render(this);
 
 		// Check for the current state to see what to do this cycle
 		switch (currentState) {
@@ -83,7 +90,7 @@ public final class RunnerScreen extends TateGameScreen {
 				}
 
 				// Move the rock
-				this.rock.update(backgroundSpeed * 5.0);
+				this.rock.update(backgroundSpeed * 2.0);
 
 				// Display the distance walked text
 				this.drawCenteredText(0, 400, this.gameFont, Color.ORANGE,
