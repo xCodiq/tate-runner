@@ -3,9 +3,9 @@ package com.xcodiq.taterunner.manager.implementation;
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.manager.Manager;
-import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.screen.implementation.RunnerScreen;
+import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import com.xcodiq.taterunner.util.text.TextUtil;
 import de.gurkenlabs.litiengine.Game;
 
@@ -43,7 +43,6 @@ public final class ScreenManager extends Manager {
 	public void disable() {
 		// Clear the caches of the text utility class
 		TextUtil.clearCache();
-		Logger.debug("[ScreenManager] Cleared TextUtil cache");
 	}
 
 	public <T extends TateGameScreen> void showScreen(Class<T> screenClass) {
@@ -53,6 +52,7 @@ public final class ScreenManager extends Manager {
 
 		// Display the game screen
 		Game.screens().display(gameScreen.getName());
+		gameScreen.preShow();
 
 		// Set the game screen as the current screen
 		this.currentScreen = gameScreen;

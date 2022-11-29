@@ -4,5 +4,5 @@ import java.awt.*;
 
 public interface ImageEditor {
 
-	void drawImage(int x, int y, Image image);
+	void drawImage(double x, double y, Image image);
 }

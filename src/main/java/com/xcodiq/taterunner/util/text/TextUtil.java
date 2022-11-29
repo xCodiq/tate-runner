@@ -16,7 +16,7 @@ public final class TextUtil {
 	private static final Map<Integer, Long> currentTimings = new HashMap<>();
 
 	static {
-		DEFAULT_FONT = Resources.fonts().get("font/slkscr.ttf", 20f);
+		DEFAULT_FONT = Resources.fonts().get("font/ElecstromRegular-w1y4P.ttf", 20f);
 	}
 
 	private TextUtil() {

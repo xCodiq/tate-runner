@@ -3,6 +3,7 @@ package com.xcodiq.taterunner;
 import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.manager.Manager;
 import com.xcodiq.taterunner.manager.implementation.KeystrokeManager;
+import com.xcodiq.taterunner.manager.implementation.MouseManager;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
@@ -10,8 +11,9 @@ import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import com.xcodiq.taterunner.state.State;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.configuration.DisplayMode;
-import de.gurkenlabs.litiengine.gui.screens.Resolution;
+import de.gurkenlabs.litiengine.entities.SoundSource;
 import de.gurkenlabs.litiengine.resources.Resources;
+import de.gurkenlabs.litiengine.sound.Sound;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +21,19 @@ import java.util.stream.Stream;
 
 public class TateRunnerGame implements IGame {
 
-	public static final int WIDTH = 1920, HEIGHT = 1080;
+	public static int WIDTH, HEIGHT;
+	public static double GRAVITY;
 
-	// set to true to enable debug mode
-	public static boolean DEBUG_MODE = true;
-	private static TateRunnerGame INSTANCE = null;
+	public static boolean DEBUG_MODE;
+	private static TateRunnerGame INSTANCE;
+
+	static {
+		WIDTH = 1920;
+		HEIGHT = 1080;
+		GRAVITY = 2.3;
+		DEBUG_MODE = false; // set to true to enable debug mode
+		INSTANCE = null;
+	}
 
 	private final Map<Class<? extends Manager>, Manager> registeredManagers = new HashMap<>();
 
@@ -45,12 +55,13 @@ public class TateRunnerGame implements IGame {
 		Game.info().setDevelopers("Elmar", "Tomas", "Nino");
 		Game.info().setVersion("v0.0.1");
 
+		// Set up the game configuration
+		Game.config().graphics().setDisplayMode(DisplayMode.WINDOWED);
+
 		// Initialize the Game
 		Game.init(args);
 
-		// Set the default window resolution and window icon, and other default window/display settings
-		Game.config().graphics().setDisplayMode(DisplayMode.WINDOWED);
-		Game.window().setResolution(Resolution.custom(WIDTH, HEIGHT, "default"));
+		// Set the default window resolution and window icon
 		Game.window().setIcon(Resources.images().get("icon/andrew_tate_icon.jpg"));
 
 		// Register the managers
@@ -69,6 +80,8 @@ public class TateRunnerGame implements IGame {
 		// Set starting screen as the splash screen
 		final ScreenManager screenManager = this.getManager(ScreenManager.class);
 		screenManager.setCurrentScreen(SplashScreen.class);
+
+		Logger.log("Successfully started the game");
 	}
 
 	@Override
@@ -89,7 +102,8 @@ public class TateRunnerGame implements IGame {
 		Stream.of(
 				new StateManager(this),
 				new ScreenManager(this),
-				new KeystrokeManager(this)
+				new KeystrokeManager(this),
+				new MouseManager(this)
 		).forEach(manager -> {
 			// Enable the manager
 			manager.enable();

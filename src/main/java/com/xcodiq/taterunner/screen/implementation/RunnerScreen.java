@@ -1,32 +1,31 @@
 package com.xcodiq.taterunner.screen.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
+import com.xcodiq.taterunner.entity.implementation.Player;
+import com.xcodiq.taterunner.entity.implementation.Rock;
 import com.xcodiq.taterunner.keystroke.Keystroke;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
-import com.xcodiq.taterunner.player.Player;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.button.Button;
+import com.xcodiq.taterunner.screen.button.implementation.StoreButton;
 import com.xcodiq.taterunner.screen.render.BackgroundRender;
 import com.xcodiq.taterunner.state.State;
 import de.gurkenlabs.litiengine.Game;
-import de.gurkenlabs.litiengine.graphics.ImageRenderer;
+import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.resources.Resources;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class RunnerScreen extends TateGameScreen {
 
 	private final StateManager stateManager;
+
 	private final Player player;
+	private final Rock rock;
 
 	private final Image backgroundImage;
 	private final BackgroundRender backgroundRender;
-	private final Font gameFont;
-
-	private final List<Button> pauseMenuButtons = new ArrayList<>();
+	private final Font gameFont, gameTextFont;
 
 	private int distanceWalked = 0;
 	private double backgroundSpeed = -3.00;
@@ -36,23 +35,26 @@ public final class RunnerScreen extends TateGameScreen {
 		this.stateManager = tateRunner.getManager(StateManager.class);
 
 		// Initialize a new player
-		this.player = new Player();
-		this.player.setStartingPosition(280, 578);
+		this.player = new Player(580, 578);
+		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() == State.RUNNING);
+
+		this.rock = new Rock(TateRunnerGame.WIDTH + 100, 719);
 
 		// Load the background image
 		this.backgroundImage = Resources.images().get("textures/background/tatetunner-dev-background.png");
 
 		// Set up font
-		this.gameFont = Resources.fonts().get("font/TarrgetLaserRegular-4OE9.otf");
+		this.gameFont = Resources.fonts().get("font/ElecstromRegular-w1y4P.ttf");
+		this.gameTextFont = Resources.fonts().get("font/slkscr.ttf");
 
 		// Initialize the background render coordinates
 		this.backgroundRender = new BackgroundRender(0, TateRunnerGame.WIDTH);
 
 		// Create all the buttons for this screen
-		final Button button = new Button(null, null, 0, 0, 0, 0);
-		button.setClickEvent(mouseEvent -> {
+		this.addButton(new StoreButton(tateRunner));
 
-		});
+		// Restart the game
+		this.restart();
 	}
 
 	@Override
@@ -65,55 +67,105 @@ public final class RunnerScreen extends TateGameScreen {
 		// Render the background
 		this.renderBackground();
 
-		// Display the distance walked text
-		this.drawCenteredText(0, -320, this.gameFont, Color.ORANGE, 75f, String.valueOf(this.distanceWalked));
-
 		// Render the player
 		this.player.render(this);
 
+		// Render the rock
+		this.rock.render(this);
+
 		// Check for the current state to see what to do this cycle
 		switch (currentState) {
-			// Only run game progression when current state is set to running
+			// Only run game progression things when current state is set to running
 			case RUNNING -> {
+				if (this.player.collidesWith(this.rock)) {
+					this.stateManager.setCurrentState(State.DIED);
+					return;
+				}
+
+				// Move the rock
+				this.rock.update(backgroundSpeed * 5.0);
+
+				// Display the distance walked text
+				this.drawCenteredText(0, 400, this.gameFont, Color.ORANGE,
+						75f, String.valueOf(this.distanceWalked));
+
+				// Adjust the background coordinates
+				backgroundRender.adjust(backgroundSpeed);
+
+				// Attempt to change the player's position while jumping
+				this.player.jump();
+
 				// Up the distance walked
 				if (Game.time().now() % (int) (80 * (1 + (this.backgroundSpeed / 100.0))) == 0) {
 					this.distanceWalked++;
 				}
 
-				// Up the backgroundSpeed
+				// Up the backgroundSpeed and playerAnimationSpeed
 				if (Game.time().now() % 100 == 0) {
 					this.backgroundSpeed -= 0.02;
+					this.player.getSpriteAnimation().multiplyInterval(0.9995);
 				}
+			}
+			case DIED -> {
+				// Draw a fullscreen rectangle on with an alpha
+				this.graphics.setColor(new Color(0, 0, 0, (int) (0.85 * 255)));
+				ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
+
+				// Draw the game paused text on the screen
+				this.drawCenteredText(this.gameFont, Color.RED, 125f, "YOU DIED!");
+				this.drawCenteredAnimatedText(0, 50, 550, this.gameTextFont, new Color(213, 213, 213), 25f,
+						"Press > SPACE < to start over",
+						"Press > SPACE < to start over",
+						"Press  >SPACE<  to start over");
 			}
 			case PAUSED -> {
 				// Draw a fullscreen rectangle on with an alpha
-				this.graphics.setColor(new Color(0, 0, 0, (int) (0.75 * 255)));
-				this.graphics.fill3DRect(0, 0, 1920, 1080, false);
+				this.graphics.setColor(new Color(0, 0, 0, (int) (0.85 * 255)));
+				ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
 
 				// Draw the game paused text on the screen
-				this.drawCenteredText(this.gameFont, Color.WHITE, 75f, "GAME PAUSED");
+				this.drawCenteredText(0, 5, this.gameFont, new Color(2, 96, 96), 125f, "GAME PAUSED");
+				this.drawCenteredText(this.gameFont, Color.CYAN, 125f, "GAME PAUSED");
+				this.drawCenteredAnimatedText(0, 50, 550, this.gameTextFont, new Color(213, 213, 213), 25f,
+						"Press > ESC < to resume the game",
+						"Press > ESC < to resume the game",
+						"Press  >ESC<  to resume the game");
 
 				// Set the pause menu buttons to visible
-				this.pauseMenuButtons.forEach(button -> button.toggleVisibility(this));
+				this.getButtons().forEach(button -> button.render(this));
 			}
 		}
 	}
 
 	@Keystroke
 	public void keystroke(KeyEvent keyEvent) {
-		switch (keyEvent.getKeyCode()) {
-			case KeyEvent.VK_ESCAPE -> {
-//				final ScreenManager screenManager = this.tateRunner.getManager(ScreenManager.class);
-//				screenManager.showScreen(SplashScreen.class);
-				this.stateManager.setCurrentState(this.stateManager.getCurrentState() == State.RUNNING ? State.PAUSED : State.RUNNING);
+		final State currentState = this.stateManager.getCurrentState();
+		switch (currentState) {
+			case RUNNING, PAUSED -> {
+				if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					this.stateManager.setCurrentState(this.stateManager.getCurrentState() == State.RUNNING
+							? State.PAUSED : State.RUNNING);
+				}
+
+				if (currentState == State.RUNNING && keyEvent.getKeyCode() == KeyEvent.VK_SPACE) {
+					if (!this.player.isJumping()) this.player.setJumping(true);
+				}
+
+				if (currentState == State.RUNNING && keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+					this.stateManager.setCurrentState(State.DIED);
+				}
 			}
-//			case KeyEvent.VK_UP -> this.player.addY(-10);
-//			case KeyEvent.VK_DOWN -> this.player.addY(10);
-//			case KeyEvent.VK_RIGHT -> this.player.addX(10);
-//			case KeyEvent.VK_LEFT -> this.player.addX(-10);
-//			case KeyEvent.VK_BACK_SPACE -> this.distanceWalked = 0;
-//			case KeyEvent.VK_ENTER -> Game.loop().setTimeScale(Game.loop().getTimeScale() == 1 ? 0 : 1);
+			case DIED -> {
+				if (keyEvent.getKeyCode() == KeyEvent.VK_SPACE) {
+					this.restart();
+				}
+			}
 		}
+	}
+
+	@Override
+	public void preShow() {
+		this.restart();
 	}
 
 	private void renderBackground() {
@@ -123,19 +175,21 @@ public final class RunnerScreen extends TateGameScreen {
 		}
 
 		// Draw the actual background image
-		this.drawBackground();
-
-		// Adjust the background coordinates if state is RUNNING
-		if (this.stateManager.getCurrentState() == State.RUNNING)
-			backgroundRender.adjust(backgroundSpeed);
+		this.drawImage(backgroundRender.getBackgroundX(), 0, this.backgroundImage);
+		this.drawImage(backgroundRender.getNextBackgroundX(), 0, this.backgroundImage);
 	}
 
-	private void drawBackground() {
-		this.drawBackgroundAt(backgroundRender.getBackgroundX());
-		this.drawBackgroundAt(backgroundRender.getNextBackgroundX());
-	}
+	private void restart() {
+		// Reset the entities
+		this.player.reset();
+		this.rock.reset();
 
-	private void drawBackgroundAt(double backgroundX) {
-		ImageRenderer.render(this.graphics, this.backgroundImage, backgroundX, 0);
+		// Reset the background and values
+		this.backgroundRender.reset();
+		this.distanceWalked = 0;
+		this.backgroundSpeed = -3.00;
+
+		// Set the state to running again
+		this.stateManager.setCurrentState(State.RUNNING);
 	}
 }

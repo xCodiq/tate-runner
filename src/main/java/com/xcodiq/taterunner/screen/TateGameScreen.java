@@ -2,23 +2,30 @@ package com.xcodiq.taterunner.screen;
 
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.keystroke.Keystroke;
+import com.xcodiq.taterunner.logger.Logger;
+import com.xcodiq.taterunner.screen.button.Button;
 import com.xcodiq.taterunner.util.editor.ImageEditor;
 import com.xcodiq.taterunner.util.editor.TextEditor;
 import com.xcodiq.taterunner.util.text.TextUtil;
 import de.gurkenlabs.litiengine.graphics.ImageRenderer;
 import de.gurkenlabs.litiengine.gui.screens.GameScreen;
+import de.gurkenlabs.litiengine.input.Input;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.List;
 
 public abstract class TateGameScreen extends GameScreen implements TextEditor, ImageEditor {
 
 	protected final TateRunnerGame tateRunner;
 
+	private final List<Button> buttons = new ArrayList<>();
 	private final Method keystrokeMethod;
+
 	protected Graphics2D graphics;
 
 	public TateGameScreen(TateRunnerGame tateRunner, String name) {
@@ -46,6 +53,10 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 	}
 
 	public abstract void render();
+
+	public void preShow() {
+
+	}
 
 	public Graphics2D getGraphics() {
 		return graphics;
@@ -78,12 +89,20 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 	}
 
 	@Override
-	public void drawImage(int x, int y, Image image) {
+	public void drawImage(double x, double y, Image image) {
 		ImageRenderer.render(this.graphics, image, x, y);
 	}
 
 	public void drawBackgroundImage(Image image) {
 		this.drawImage(0, 0, image);
+	}
+
+	public List<Button> getButtons() {
+		return buttons;
+	}
+
+	public void addButton(Button button) {
+		this.buttons.add(button);
 	}
 
 	@Override
