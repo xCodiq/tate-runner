@@ -1,7 +1,7 @@
 package com.xcodiq.taterunner.screen.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
-import com.xcodiq.taterunner.keystroke.Keystroke;
+import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.screen.button.implementation.StoreButton;
@@ -78,11 +78,11 @@ public final class SplashScreen extends TateGameScreen {
 	}
 
 	private void randomlyLetKakashiWalk() {
-		if (!showKakashi && Game.time().now() % 300 == 0) this.showKakashi = true;
+		if (!showKakashi && Game.time().now() % 400 == 0) this.showKakashi = true;
 		if (!this.showKakashi) return;
 
 		this.kakashiX += 12;
-		this.drawImage(this.kakashiX, 622 - 200, this.kakashiAnimation.getCurrentFrame());
+		this.drawImage(this.kakashiX, (777 * TateRunnerGame.IMAGE_SCALE) - 200, this.kakashiAnimation.getCurrentFrame());
 
 		if (this.kakashiX > TateRunnerGame.WIDTH + 100) {
 			this.showKakashi = false;

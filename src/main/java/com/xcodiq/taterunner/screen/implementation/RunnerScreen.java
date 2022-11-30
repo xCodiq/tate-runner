@@ -3,10 +3,11 @@ package com.xcodiq.taterunner.screen.implementation;
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
-import com.xcodiq.taterunner.keystroke.Keystroke;
+import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.screen.button.implementation.StoreButton;
+import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.screen.render.BackgroundRender;
 import com.xcodiq.taterunner.state.State;
 import com.xcodiq.taterunner.util.image.ImageUtil;
@@ -29,23 +30,21 @@ public final class RunnerScreen extends TateGameScreen {
 	private final BackgroundRender backgroundRender;
 	private final Font gameFont, gameTextFont;
 
-	private final double floorYCoordinate;
-
-	private int distanceWalked = 0;
-	private double backgroundSpeed = -3.00;
+	private int distanceWalked;
+	private double backgroundSpeed;
 
 	public RunnerScreen(TateRunnerGame tateRunner) {
 		super(tateRunner, "Runner");
 		this.stateManager = tateRunner.getManager(StateManager.class);
 
 		// Determine the floor y coordinate
-		this.floorYCoordinate = 777;
+		final double floorYCoordinate = 777;
 
 		// Initialize a new player
-		this.player = new Player(580, this.floorYCoordinate);
+		this.player = new Player(580, floorYCoordinate);
 		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() == State.RUNNING);
 
-		this.rock = new Rock(TateRunnerGame.WIDTH + 100, this.floorYCoordinate);
+		this.rock = new Rock(TateRunnerGame.WIDTH + 100, floorYCoordinate);
 
 		// Load the background image
 		this.backgroundImage = ImageUtil.loadImage("textures/background/tatetunner-dev-background.png");
@@ -89,18 +88,22 @@ public final class RunnerScreen extends TateGameScreen {
 					return;
 				}
 
+				// Determine the frame speed if the player is running/jumping
+//				final double frameSpeed = player.isJumping() ? backgroundSpeed * 1.5 : backgroundSpeed;
+				final double frameSpeed = backgroundSpeed;
+
 				// Move the rock
-				this.rock.update(backgroundSpeed * 2.0);
+				this.rock.update(frameSpeed);
 
 				// Display the distance walked text
 				this.drawCenteredText(0, 400, this.gameFont, Color.ORANGE,
 						75f, String.valueOf(this.distanceWalked));
 
-				// Adjust the background coordinates
-				backgroundRender.adjust(backgroundSpeed);
-
 				// Attempt to change the player's position while jumping
 				this.player.jump();
+
+				// Adjust the background coordinates
+				backgroundRender.adjust(frameSpeed);
 
 				// Up the distance walked
 				if (Game.time().now() % (int) (80 * (1 + (this.backgroundSpeed / 100.0))) == 0) {
@@ -194,7 +197,7 @@ public final class RunnerScreen extends TateGameScreen {
 		// Reset the background and values
 		this.backgroundRender.reset();
 		this.distanceWalked = 0;
-		this.backgroundSpeed = -3.00;
+		this.backgroundSpeed = -6.00;
 
 		// Set the state to running again
 		this.stateManager.setCurrentState(State.RUNNING);

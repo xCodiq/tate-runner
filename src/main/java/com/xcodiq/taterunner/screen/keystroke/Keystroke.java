@@ -1,4 +1,4 @@
-package com.xcodiq.taterunner.keystroke;
+package com.xcodiq.taterunner.screen.keystroke;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

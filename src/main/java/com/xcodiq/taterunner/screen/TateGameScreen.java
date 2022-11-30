@@ -1,7 +1,7 @@
 package com.xcodiq.taterunner.screen;
 
 import com.xcodiq.taterunner.TateRunnerGame;
-import com.xcodiq.taterunner.keystroke.Keystroke;
+import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.screen.button.Button;
 import com.xcodiq.taterunner.util.editor.ImageEditor;
 import com.xcodiq.taterunner.util.editor.TextEditor;

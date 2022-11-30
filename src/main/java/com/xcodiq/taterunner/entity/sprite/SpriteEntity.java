@@ -2,7 +2,6 @@ package com.xcodiq.taterunner.entity.sprite;
 
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.entity.Entity;
-import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 
@@ -31,7 +30,6 @@ public class SpriteEntity extends Entity {
 			ShapeRenderer.render(tateGameScreen.getGraphics(), this.boundingBox);
 		}
 
-//		this.y = 622 - this.height; goeie is 477
 		// Draw the sprite image
 		tateGameScreen.drawImage(this.x, this.y, this.spriteImage);
 	}
