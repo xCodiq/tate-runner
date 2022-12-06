@@ -29,6 +29,6 @@ public final class StateManager extends Manager {
 
 	public void setCurrentState(State currentState) {
 		this.currentState = currentState;
-		Logger.debug("[StateManager] Switched to " + currentState + "");
+		Logger.debug("[StateManager] Switched to " + currentState);
 	}
 }

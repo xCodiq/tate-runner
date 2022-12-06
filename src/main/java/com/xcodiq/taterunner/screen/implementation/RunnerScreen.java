@@ -3,7 +3,6 @@ package com.xcodiq.taterunner.screen.implementation;
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
-import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.screen.button.implementation.StoreButton;
@@ -18,33 +17,28 @@ import de.gurkenlabs.litiengine.resources.Resources;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class RunnerScreen extends TateGameScreen {
 
 	private final StateManager stateManager;
 
 	private final Player player;
-	private final Rock rock;
-
+	private final double floorYCoordinate = 777;
 	private final BufferedImage backgroundImage;
 	private final BackgroundRender backgroundRender;
 	private final Font gameFont, gameTextFont;
-
+	private Rock rock;
 	private int distanceWalked;
-	private double backgroundSpeed;
+	private double gameSpeed;
 
 	public RunnerScreen(TateRunnerGame tateRunner) {
 		super(tateRunner, "Runner");
 		this.stateManager = tateRunner.getManager(StateManager.class);
 
-		// Determine the floor y coordinate
-		final double floorYCoordinate = 777;
-
 		// Initialize a new player
 		this.player = new Player(580, floorYCoordinate);
 		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() == State.RUNNING);
-
-		this.rock = new Rock(TateRunnerGame.WIDTH + 100, floorYCoordinate);
 
 		// Load the background image
 		this.backgroundImage = ImageUtil.loadImage("textures/background/tatetunner-dev-background.png");
@@ -88,12 +82,8 @@ public final class RunnerScreen extends TateGameScreen {
 					return;
 				}
 
-				// Determine the frame speed if the player is running/jumping
-//				final double frameSpeed = player.isJumping() ? backgroundSpeed * 1.5 : backgroundSpeed;
-				final double frameSpeed = backgroundSpeed;
-
-				// Move the rock
-				this.rock.update(frameSpeed);
+				// Update the rock
+				this.updateRock();
 
 				// Display the distance walked text
 				this.drawCenteredText(0, 400, this.gameFont, Color.ORANGE,
@@ -103,16 +93,16 @@ public final class RunnerScreen extends TateGameScreen {
 				this.player.jump();
 
 				// Adjust the background coordinates
-				backgroundRender.adjust(frameSpeed);
+				backgroundRender.adjust(this.gameSpeed);
 
 				// Up the distance walked
-				if (Game.time().now() % (int) (80 * (1 + (this.backgroundSpeed / 100.0))) == 0) {
+				if (Game.time().now() % (int) (80 * (1 + (this.gameSpeed / 100.0))) == 0) {
 					this.distanceWalked++;
 				}
 
-				// Up the backgroundSpeed and playerAnimationSpeed
+				// Up the gameSpeed and playerAnimationSpeed
 				if (Game.time().now() % 100 == 0) {
-					this.backgroundSpeed -= 0.02;
+					this.gameSpeed -= 0.02;
 					this.player.getSpriteAnimation().multiplyInterval(0.9995);
 				}
 			}
@@ -122,6 +112,7 @@ public final class RunnerScreen extends TateGameScreen {
 				ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
 
 				// Draw the game paused text on the screen
+				this.drawCenteredText(0, 5, this.gameFont, new Color(96, 0, 0), 125f, "YOU DIED!");
 				this.drawCenteredText(this.gameFont, Color.RED, 125f, "YOU DIED!");
 				this.drawCenteredAnimatedText(0, 50, 550, this.gameTextFont, new Color(213, 213, 213), 25f,
 						"Press > SPACE < to start over",
@@ -189,15 +180,27 @@ public final class RunnerScreen extends TateGameScreen {
 		this.drawImage(backgroundRender.getNextBackgroundX(), 0, this.backgroundImage);
 	}
 
+	private void updateRock() {
+		this.rock.update(this.gameSpeed);
+
+		if (this.rock.getX() < -this.rock.getWidth()) {
+			final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+			final int randomDistance = ThreadLocalRandom.current().nextInt(600, 1750);
+			this.rock = new Rock(TateRunnerGame.GAME_WIDTH + randomDistance, this.floorYCoordinate,
+					randomSize, randomSize);
+		}
+	}
+
 	private void restart() {
 		// Reset the entities
 		this.player.reset();
-		this.rock.reset();
+		final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+		this.rock = new Rock(TateRunnerGame.GAME_WIDTH + 500, this.floorYCoordinate, randomSize, randomSize);
 
 		// Reset the background and values
 		this.backgroundRender.reset();
 		this.distanceWalked = 0;
-		this.backgroundSpeed = -6.00;
+		this.gameSpeed = -6.00;
 
 		// Set the state to running again
 		this.stateManager.setCurrentState(State.RUNNING);

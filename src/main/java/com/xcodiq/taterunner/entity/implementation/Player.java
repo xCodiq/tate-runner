@@ -6,10 +6,10 @@ import com.xcodiq.taterunner.util.animation.ImageAnimation;
 
 
 public final class Player extends AnimatedSpriteEntity {
-	private static final float JUMP_HEIGHT = 1f; // short jump
+	private static final float JUMP_HEIGHT = 13f;
 
-	private static final float GRAVITY = 4.2f;
-	private static final float INITIAL_JUMP_VELOCITY = 3.5f;
+	private static final float GRAVITY = 0.75f;
+	private static final float INITIAL_JUMP_VELOCITY = JUMP_HEIGHT * 2;
 
 	public double jumpVelocity = INITIAL_JUMP_VELOCITY;
 	private boolean jumping = false;
@@ -47,7 +47,8 @@ public final class Player extends AnimatedSpriteEntity {
 		if (!this.jumping) return;
 
 		this.y -= this.jumpVelocity * GRAVITY;
-		this.jumpVelocity -= 0.125f;
+		this.jumpVelocity -= 1f;
+//		this.jumpVelocity -= 0.125f;
 
 		if (jumpVelocity < -INITIAL_JUMP_VELOCITY) {
 			this.jumping = false;

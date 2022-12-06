@@ -54,7 +54,6 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 	public abstract void render();
 
 	public void preShow() {
-
 	}
 
 	public Graphics2D getGraphics() {
@@ -89,8 +88,6 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 
 	@Override
 	public void drawImage(double x, double y, BufferedImage image) {
-//		ImageRenderer.render(this.graphics, image,
-//				x, y * TateRunnerGame.IMAGE_SCALE - image.getHeight());
 		ImageRenderer.render(this.graphics, image, x, y);
 	}
 

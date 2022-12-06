@@ -20,8 +20,8 @@ public abstract class Entity {
 		this.startingX = startingX * TateRunnerGame.IMAGE_SCALE - width;
 		this.startingY = startingY * TateRunnerGame.IMAGE_SCALE - height;
 
-		this.x = startingX;
-		this.y = startingY;
+		this.x = this.startingX;
+		this.y = this.startingY;
 
 		this.boundingBox = new Rectangle((int) this.x + 10, (int) this.x + 10,
 				width - 20, height - 20);

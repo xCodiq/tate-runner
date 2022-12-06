@@ -67,10 +67,9 @@ public final class SplashScreen extends TateGameScreen {
 	@Keystroke
 	public void keystroke(KeyEvent keyEvent) {
 		switch (keyEvent.getKeyCode()) {
-			case KeyEvent.VK_SPACE -> {
+			case KeyEvent.VK_SPACE ->
 				// Switch to the Runner screen
 				this.tateRunner.getManager(ScreenManager.class).showScreen(RunnerScreen.class);
-			}
 			case KeyEvent.VK_DELETE ->
 				// Exit the actual application
 					System.exit(0);
