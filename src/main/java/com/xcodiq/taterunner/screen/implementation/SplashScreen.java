@@ -1,10 +1,10 @@
 package com.xcodiq.taterunner.screen.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
-import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.button.implementation.StoreButton;
+import com.xcodiq.taterunner.screen.button.implementation.OptionsButton;
+import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.animation.ImageAnimation;
 import com.xcodiq.taterunner.util.image.ImageUtil;
 import de.gurkenlabs.litiengine.Game;
@@ -29,9 +29,7 @@ public final class SplashScreen extends TateGameScreen {
 		this.subtitleFont = Resources.fonts().get("font/slkscr.ttf");
 
 		// Create all the buttons for this screen
-		final StoreButton button = new StoreButton(tateRunner);
-		button.setVisible(false);
-		this.addButton(button);
+		this.addButton(new OptionsButton(30, 1050));
 
 		// Initialize the player
 		this.kakashiAnimation = new ImageAnimation("kakashi", 24, 100, 200, 200);
@@ -51,11 +49,11 @@ public final class SplashScreen extends TateGameScreen {
 
 		// Draw the title
 		final String title = "TATE RUNNER";
-		this.drawCenteredText(0, 5, Color.decode("#034954"), 100f, title); // shadow
-		this.drawCenteredText(Color.decode("#2be3ff"), 100f, title); // text
+		this.drawCenteredText(0, -95, Color.decode("#034954"), 120f, title); // shadow
+		this.drawCenteredText(0, -100, Color.decode("#2be3ff"), 120f, title); // text
 
 		// Draw the subtitle
-		this.drawCenteredAnimatedText(0, 40, 550, this.subtitleFont, Color.WHITE, 20f,
+		this.drawCenteredAnimatedText(0, -60, 550, this.subtitleFont, Color.WHITE, 25f,
 				">  Press SPACE to enter the game  <",
 				">  Press SPACE to enter the game  <",
 				"> Press SPACE to enter the game <");
@@ -69,7 +67,7 @@ public final class SplashScreen extends TateGameScreen {
 		switch (keyEvent.getKeyCode()) {
 			case KeyEvent.VK_SPACE ->
 				// Switch to the Runner screen
-				this.tateRunner.getManager(ScreenManager.class).showScreen(RunnerScreen.class);
+					this.tateRunner.getManager(ScreenManager.class).showScreen(RunnerScreen.class);
 			case KeyEvent.VK_DELETE ->
 				// Exit the actual application
 					System.exit(0);

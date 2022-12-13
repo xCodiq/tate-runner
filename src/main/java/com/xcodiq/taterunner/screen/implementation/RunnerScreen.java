@@ -41,7 +41,9 @@ public final class RunnerScreen extends TateGameScreen {
 		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() == State.RUNNING);
 
 		// Load the background image
-		this.backgroundImage = ImageUtil.loadImage("textures/background/tatetunner-dev-background.png");
+		this.backgroundImage = ImageUtil.loadImage("textures/background/cpastegame-3-graveyard.png");
+//		this.backgroundImage = ImageUtil.loadImage("textures/background/tree-background.png");
+//		this.backgroundImage = ImageUtil.loadImage("textures/background/tatetunner-dev-background.png");
 
 		// Set up font
 		this.gameFont = Resources.fonts().get("font/ElecstromRegular-w1y4P.ttf");
@@ -81,6 +83,14 @@ public final class RunnerScreen extends TateGameScreen {
 					this.stateManager.setCurrentState(State.DIED);
 					return;
 				}
+//				if (this.player.collidesWith(this.rock)) {
+//					if (this.player.isOnGround()) {
+//						this.player.update(gameSpeed);
+//					} else {
+//						this.stateManager.setCurrentState(State.DIED);
+//						return;
+//					}
+//				}
 
 				// Update the rock
 				this.updateRock();
