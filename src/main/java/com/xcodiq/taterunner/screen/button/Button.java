@@ -27,8 +27,10 @@ public class Button {
 		this.width = unfocusedImage.getWidth();
 		this.height = unfocusedImage.getHeight();
 
-		this.x = (x + this.width > TateRunnerGame.GAME_WIDTH) ? (x * TateRunnerGame.IMAGE_SCALE - this.width) : x;
-		this.y = (y * TateRunnerGame.IMAGE_SCALE) - (y + this.height > TateRunnerGame.GAME_HEIGHT ? this.height : 0);
+//		this.x = (x + this.width > TateRunnerGame.GAME_WIDTH) ? (x * TateRunnerGame.IMAGE_SCALE - this.width) : x;
+//		this.y = (y * TateRunnerGame.IMAGE_SCALE) - (y + this.height > TateRunnerGame.GAME_HEIGHT ? this.height : 0);
+		this.x = x * TateRunnerGame.IMAGE_SCALE;
+		this.y = y * TateRunnerGame.IMAGE_SCALE;
 
 		this.rectangle = new Rectangle((int) this.x, (int) this.y, this.width, this.height);
 	}

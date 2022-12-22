@@ -80,9 +80,6 @@ public class TateRunnerGame implements IGame {
 		// Start the actual game
 		Game.start();
 
-//		JFrame frame = (JFrame) Game.window().getHostControl();
-//		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
 		// Set the current state as started
 		stateManager.setCurrentState(State.STARTED);
 

@@ -1,6 +1,7 @@
 package com.xcodiq.taterunner.screen.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
+import com.xcodiq.taterunner.entity.implementation.Rock;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.screen.button.implementation.OptionsButton;
@@ -29,11 +30,13 @@ public final class SplashScreen extends TateGameScreen {
 		this.subtitleFont = Resources.fonts().get("font/slkscr.ttf");
 
 		// Create all the buttons for this screen
-		this.addButton(new OptionsButton(30, 1050));
+		this.addButton(new OptionsButton(20, 20));
 
 		// Initialize the player
 		this.kakashiAnimation = new ImageAnimation("kakashi", 24, 100, 200, 200);
 	}
+
+	Rock rock = new Rock(600,600, 100, 100);
 
 	@Override
 	public void render() {
@@ -60,6 +63,8 @@ public final class SplashScreen extends TateGameScreen {
 
 		// Draw the buttons
 		this.getButtons().forEach(button -> button.render(this));
+
+		rock.render(this);
 	}
 
 	@Keystroke

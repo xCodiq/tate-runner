@@ -27,7 +27,7 @@ public class SpriteEntity extends Entity {
 		// Draw the bounding box if debug mode is enabled
 		if (TateRunnerGame.DEBUG_MODE) {
 			tateGameScreen.getGraphics().setColor(Color.RED);
-			ShapeRenderer.render(tateGameScreen.getGraphics(), this.boundingBox);
+			ShapeRenderer.render(tateGameScreen.getGraphics(), this.boundingBox.getShape());
 		}
 
 		// Draw the sprite image

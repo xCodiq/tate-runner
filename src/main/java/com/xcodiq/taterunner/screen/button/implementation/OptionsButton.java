@@ -6,12 +6,12 @@ import com.xcodiq.taterunner.util.image.ImageUtil;
 public final class OptionsButton extends Button {
 
 	public OptionsButton(double x, double y) {
-		super(ImageUtil.loadImage("textures/button/options/options2-unfocussed.png"),
-				ImageUtil.loadImage("textures/button/options/options2-focussed.png"),
+		super(
+				ImageUtil.loadImage("textures/button/options/options-gear-unfocussed.png", 50, 50),
+				ImageUtil.loadImage("textures/button/options/options-gear-focussed.png", 50, 50),
 				x, y);
 
 		this.setClickEvent(mouseEvent -> {
-			System.exit(0);
 		});
 	}
 }

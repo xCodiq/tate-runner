@@ -1,10 +1,12 @@
 package com.xcodiq.taterunner.entity.implementation;
 
+import com.xcodiq.taterunner.entity.bound.annotation.BoundContext;
+import com.xcodiq.taterunner.entity.bound.type.BoundType;
 import com.xcodiq.taterunner.entity.sprite.AnimatedSpriteEntity;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.util.animation.ImageAnimation;
 
-
+@BoundContext(boundType = BoundType.BOX)
 public final class Player extends AnimatedSpriteEntity {
 	private static final float JUMP_HEIGHT = 13f;
 
