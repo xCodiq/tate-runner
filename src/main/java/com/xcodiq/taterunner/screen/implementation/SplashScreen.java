@@ -1,9 +1,9 @@
 package com.xcodiq.taterunner.screen.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
-import com.xcodiq.taterunner.entity.implementation.Rock;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
+import com.xcodiq.taterunner.screen.button.implementation.ExitButton;
 import com.xcodiq.taterunner.screen.button.implementation.OptionsButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.animation.ImageAnimation;
@@ -30,13 +30,12 @@ public final class SplashScreen extends TateGameScreen {
 		this.subtitleFont = Resources.fonts().get("font/slkscr.ttf");
 
 		// Create all the buttons for this screen
-		this.addButton(new OptionsButton(20, 20));
+		this.addButton(new OptionsButton(165, 20));
+		this.addButton(new ExitButton(20, 20));
 
 		// Initialize the player
 		this.kakashiAnimation = new ImageAnimation("kakashi", 24, 100, 200, 200);
 	}
-
-	Rock rock = new Rock(600,600, 100, 100);
 
 	@Override
 	public void render() {
@@ -52,19 +51,17 @@ public final class SplashScreen extends TateGameScreen {
 
 		// Draw the title
 		final String title = "TATE RUNNER";
-		this.drawCenteredText(0, -95, Color.decode("#034954"), 120f, title); // shadow
-		this.drawCenteredText(0, -100, Color.decode("#2be3ff"), 120f, title); // text
+		this.drawCenteredText(0, -45, Color.decode("#034954"), 120f, title); // shadow
+		this.drawCenteredText(0, -50, Color.decode("#2be3ff"), 120f, title); // text
 
 		// Draw the subtitle
-		this.drawCenteredAnimatedText(0, -60, 550, this.subtitleFont, Color.WHITE, 25f,
+		this.drawCenteredAnimatedText(0, -10, 550, this.subtitleFont, Color.WHITE, 25f,
 				">  Press SPACE to enter the game  <",
 				">  Press SPACE to enter the game  <",
 				"> Press SPACE to enter the game <");
 
 		// Draw the buttons
 		this.getButtons().forEach(button -> button.render(this));
-
-		rock.render(this);
 	}
 
 	@Keystroke

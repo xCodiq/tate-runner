@@ -81,14 +81,6 @@ public final class RunnerScreen extends TateGameScreen {
 					this.stateManager.setCurrentState(State.DIED);
 					return;
 				}
-//				if (this.player.collidesWith(this.rock)) {
-//					if (this.player.isOnGround()) {
-//						this.player.update(gameSpeed);
-//					} else {
-//						this.stateManager.setCurrentState(State.DIED);
-//						return;
-//					}
-//				}
 
 				// Update the rock
 				this.updateRock();

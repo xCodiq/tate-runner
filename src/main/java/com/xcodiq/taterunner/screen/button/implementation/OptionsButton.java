@@ -7,8 +7,8 @@ public final class OptionsButton extends Button {
 
 	public OptionsButton(double x, double y) {
 		super(
-				ImageUtil.loadImage("textures/button/options/options-gear-unfocussed.png", 50, 50),
-				ImageUtil.loadImage("textures/button/options/options-gear-focussed.png", 50, 50),
+				ImageUtil.loadImage("textures/button/options/options-unfocussed.png", 115, 45),
+				ImageUtil.loadImage("textures/button/options/options-focussed.png", 115, 45),
 				x, y);
 
 		this.setClickEvent(mouseEvent -> {

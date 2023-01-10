@@ -4,9 +4,10 @@ import java.awt.*;
 import java.util.function.Supplier;
 
 public abstract class BoundingBox<S extends Shape> {
+	private static final float POLYGON_TRANSLATION_MARGIN = -0.25f;
 
 	private final S shape;
-	private double x, y;
+	private int x, y, lastX = x, lastY = y;
 
 	public BoundingBox(Class<S> shapeClass, Supplier<S> shapeSupplier) {
 		this.shape = shapeSupplier.get();
@@ -16,15 +17,27 @@ public abstract class BoundingBox<S extends Shape> {
 		return shape;
 	}
 
-	public void updates(double x, double y) {
+	public void update(int x, int y) {
 		this.x = x;
 		this.y = y;
-	}
 
-	public void update(double x, double y) {
-		if (shape instanceof Rectangle rectangle) rectangle.setLocation((int) x, (int) y);
-//		else if (shape instanceof Ellipse2D ellipse) ellipse.setFrame();
-		else if (shape instanceof Polygon polygon) polygon.translate((int) x, (int) y);
+		// Check if the shape is a rectangle
+		if (shape instanceof Rectangle rectangle)
+			// Set the rectangle's location to x and y
+			rectangle.setLocation(x, y);
+
+		// Check if the shape is a polygon
+		else if (shape instanceof Polygon polygon) {
+			// Translate the polygon by deltaX and deltaY (current - last)
+			int deltaX = x - lastX;
+			int deltaY = y - lastY;
+
+			polygon.translate(deltaX, deltaY);
+		}
+
+		// Update the last fields of the bounding box
+		this.lastX = x;
+		this.lastY = y;
 	}
 
 	public double getX() {
@@ -36,6 +49,6 @@ public abstract class BoundingBox<S extends Shape> {
 	}
 
 	public boolean overlaps(BoundingBox<?> boundingBox) {
-		return false;
+		return this.shape.intersects(boundingBox.getShape().getBounds2D());
 	}
 }

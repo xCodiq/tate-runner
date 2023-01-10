@@ -7,8 +7,10 @@ import com.xcodiq.taterunner.entity.bound.point.BoundingPoint;
 import com.xcodiq.taterunner.entity.bound.type.CircleBoundingBox;
 import com.xcodiq.taterunner.entity.bound.type.PolygonBoundingBox;
 import com.xcodiq.taterunner.entity.bound.type.RectangleBoundingBox;
+import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,6 +19,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 public abstract class Entity {
+	private static final int BOUNDING_BOX_MARGIN = 20;
 
 	protected final BoundingBox<?> boundingBox;
 
@@ -45,20 +48,33 @@ public abstract class Entity {
 
 		// Determine the bounding box type
 		this.boundingBox = switch (this.boundContext.boundType()) {
-			case BOX -> new RectangleBoundingBox(width - 20, height - 20);
-			case CIRCLE -> new CircleBoundingBox(width - 20, height - 20);
+			case BOX ->
+				// Create a rectangle bounding box
+					new RectangleBoundingBox(width - BOUNDING_BOX_MARGIN, height - BOUNDING_BOX_MARGIN);
+			case CIRCLE ->
+				// Create a circle bounding box
+					new CircleBoundingBox(width - BOUNDING_BOX_MARGIN, height - BOUNDING_BOX_MARGIN);
 			case POLYGON -> {
+				// Look for a bound file path
 				final String boundPath = this.boundContext.boundPath();
 				if (boundPath.isEmpty()) throw new RuntimeException("Bound path not in BoundContext annotation!");
 
 				try {
+					// Get the bound file location
 					final URI boundLocation = ClassLoader.getSystemResource(boundPath).toURI();
 
+					// Read all the lines and map it to a list of bounding points
 					final List<BoundingPoint> boundingPoints = Files.readAllLines(Path.of(boundLocation)).stream().map(line -> {
-						final String[] split = line.split(",");
-						return new BoundingPoint(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
-					}).toList();
+						// Split the line into two parts (x and y)
+						final String[] split = line.split(";");
 
+						// Map to a bounding point
+						return new BoundingPoint(
+								(int) (Float.parseFloat(split[0]) * this.width),
+								(int) (Float.parseFloat(split[1]) * this.height));
+					}).toList(); // collect to in list
+
+					// Create a polygon bounding box
 					yield new PolygonBoundingBox(boundingPoints);
 				} catch (IOException | URISyntaxException e) {
 					throw new RuntimeException(e);
@@ -129,7 +145,12 @@ public abstract class Entity {
 	}
 
 	public void updateBoundingBox() {
-		this.boundingBox.update(this.x + 10, this.y + 10);
+		if (this.boundingBox.getShape() instanceof Polygon) {
+			this.boundingBox.update((int) Math.round(this.x), (int) Math.round(this.y));
+		}
+		else {
+			this.boundingBox.update((int) this.x + 10, (int)this.y + 10);
+		}
 	}
 
 	public abstract void render(TateGameScreen tateGameScreen);
