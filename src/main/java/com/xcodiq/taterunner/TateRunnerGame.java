@@ -2,11 +2,9 @@ package com.xcodiq.taterunner;
 
 import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.manager.Manager;
-import com.xcodiq.taterunner.manager.implementation.KeystrokeManager;
-import com.xcodiq.taterunner.manager.implementation.MouseManager;
-import com.xcodiq.taterunner.manager.implementation.ScreenManager;
-import com.xcodiq.taterunner.manager.implementation.StateManager;
+import com.xcodiq.taterunner.manager.implementation.*;
 import com.xcodiq.taterunner.screen.TateGameScreen;
+import com.xcodiq.taterunner.screen.implementation.CosmeticShopScreen;
 import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import com.xcodiq.taterunner.state.State;
 import de.gurkenlabs.litiengine.Game;
@@ -106,6 +104,7 @@ public class TateRunnerGame implements IGame {
 	public void registerManagers() {
 		// Make a stream of all the managers to register
 		Stream.of(
+				new ProfileManager(this),
 				new StateManager(this),
 				new ScreenManager(this),
 				new KeystrokeManager(this),

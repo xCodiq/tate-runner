@@ -1,18 +1,18 @@
 package com.xcodiq.taterunner.screen.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
+import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.button.implementation.StoreButton;
+import com.xcodiq.taterunner.screen.button.implementation.CosmeticShopButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.screen.render.BackgroundRender;
 import com.xcodiq.taterunner.state.State;
 import com.xcodiq.taterunner.util.image.ImageUtil;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
-import de.gurkenlabs.litiengine.resources.Resources;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -41,17 +41,17 @@ public final class RunnerScreen extends TateGameScreen {
 		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() == State.RUNNING);
 
 		// Load the background image
-		this.backgroundImage = ImageUtil.loadImage("textures/background/tatetunner-dev-background.png");
+		this.backgroundImage = ImageUtil.loadImage("textures/background/dark-forest.png");
 
 		// Set up font
-		this.gameFont = Resources.fonts().get("font/ElecstromRegular-w1y4P.ttf");
-		this.gameTextFont = Resources.fonts().get("font/slkscr.ttf");
+		this.gameFont = TateFonts.PRIMARY_TITLE.toFont();
+		this.gameTextFont = TateFonts.SECONDARY_SUBTITLE.toFont();
 
 		// Initialize the background render coordinates
 		this.backgroundRender = new BackgroundRender(0, TateRunnerGame.WIDTH);
 
 		// Create all the buttons for this screen
-		this.addButton(new StoreButton(tateRunner));
+		this.addButton(new CosmeticShopButton(tateRunner, 20, 20));
 
 		// Restart the game
 		this.restart();

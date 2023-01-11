@@ -1,5 +1,6 @@
 package com.xcodiq.taterunner.util.text;
 
+import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.util.multiple.Pair;
 import de.gurkenlabs.litiengine.graphics.TextRenderer;
 import de.gurkenlabs.litiengine.resources.Resources;
@@ -16,7 +17,7 @@ public final class TextUtil {
 	private static final Map<Integer, Long> currentTimings = new HashMap<>();
 
 	static {
-		DEFAULT_FONT = Resources.fonts().get("font/ElecstromRegular-w1y4P.ttf", 20f);
+		DEFAULT_FONT = TateFonts.PRIMARY_TITLE.toFont().deriveFont(20f);
 	}
 
 	private TextUtil() {

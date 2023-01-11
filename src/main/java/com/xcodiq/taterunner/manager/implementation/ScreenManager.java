@@ -4,6 +4,7 @@ import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.manager.Manager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
+import com.xcodiq.taterunner.screen.implementation.CosmeticShopScreen;
 import com.xcodiq.taterunner.screen.implementation.RunnerScreen;
 import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import com.xcodiq.taterunner.util.text.TextUtil;
@@ -28,7 +29,8 @@ public final class ScreenManager extends Manager {
 		// Make a stream of all the screens to register
 		Stream.of(
 				new SplashScreen(this.tateRunnerGame),
-				new RunnerScreen(this.tateRunnerGame)
+				new RunnerScreen(this.tateRunnerGame),
+				new CosmeticShopScreen(this.tateRunnerGame)
 		).forEach(tateGameScreen -> {
 			// Add the screen to the game
 			this.tateRunnerGame.addScreen(tateGameScreen);

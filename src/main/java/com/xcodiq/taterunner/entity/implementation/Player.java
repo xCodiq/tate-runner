@@ -50,7 +50,6 @@ public final class Player extends AnimatedSpriteEntity {
 
 		this.y -= this.jumpVelocity * GRAVITY;
 		this.jumpVelocity -= 1f;
-//		this.jumpVelocity -= 0.125f;
 
 		if (jumpVelocity < -INITIAL_JUMP_VELOCITY) {
 			this.jumping = false;

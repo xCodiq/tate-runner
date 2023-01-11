@@ -1,16 +1,18 @@
 package com.xcodiq.taterunner.screen.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
+import com.xcodiq.taterunner.asset.font.TateFonts;
+import com.xcodiq.taterunner.asset.image.TateImages;
+import com.xcodiq.taterunner.asset.color.TateColors;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
+import com.xcodiq.taterunner.screen.button.implementation.CosmeticShopButton;
 import com.xcodiq.taterunner.screen.button.implementation.ExitButton;
 import com.xcodiq.taterunner.screen.button.implementation.OptionsButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.animation.ImageAnimation;
-import com.xcodiq.taterunner.util.image.ImageUtil;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
-import de.gurkenlabs.litiengine.resources.Resources;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -27,11 +29,12 @@ public final class SplashScreen extends TateGameScreen {
 		super(tateRunner, "Splash");
 
 		// Set up font
-		this.subtitleFont = Resources.fonts().get("font/slkscr.ttf");
+		this.subtitleFont = TateFonts.SECONDARY_SUBTITLE.toFont();
 
 		// Create all the buttons for this screen
-		this.addButton(new OptionsButton(165, 20));
 		this.addButton(new ExitButton(20, 20));
+		this.addButton(new OptionsButton(165, 20));
+		this.addButton(new CosmeticShopButton(tateRunner, 310, 20));
 
 		// Initialize the player
 		this.kakashiAnimation = new ImageAnimation("kakashi", 24, 100, 200, 200);
@@ -40,13 +43,13 @@ public final class SplashScreen extends TateGameScreen {
 	@Override
 	public void render() {
 		// Set background test
-		this.drawBackgroundImage(ImageUtil.loadImage("textures/background/tatetunner-dev-background.png"));
+		this.drawBackgroundImage(TateImages.DARK_FOREST_BACKGROUND.toImage());
 
 		// Randomly let kakashi walk on the screen
 		this.randomlyLetKakashiWalk();
 
 		// Draw a fullscreen rectangle on with an alpha
-		this.graphics.setColor(new Color(0, 0, 0, (int) (0.87 * 255)));
+		this.graphics.setColor(new Color(0, 0, 0, TateColors.STANDARD_BACKGROUND_ALPHA));
 		ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
 
 		// Draw the title
