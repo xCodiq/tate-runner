@@ -6,7 +6,7 @@ import com.xcodiq.taterunner.asset.image.TateImages;
 import com.xcodiq.taterunner.asset.color.TateColors;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.button.implementation.CosmeticShopButton;
+import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticShopButton;
 import com.xcodiq.taterunner.screen.button.implementation.ExitButton;
 import com.xcodiq.taterunner.screen.button.implementation.OptionsButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
@@ -33,8 +33,8 @@ public final class SplashScreen extends TateGameScreen {
 
 		// Create all the buttons for this screen
 		this.addButton(new ExitButton(20, 20));
-		this.addButton(new OptionsButton(165, 20));
-		this.addButton(new CosmeticShopButton(tateRunner, 310, 20));
+		this.addButton(new OptionsButton(165+30, 20));
+		this.addButton(new CosmeticShopButton(tateRunner, 310 + 60, 20));
 
 		// Initialize the player
 		this.kakashiAnimation = new ImageAnimation("kakashi", 24, 100, 200, 200);
@@ -49,7 +49,7 @@ public final class SplashScreen extends TateGameScreen {
 		this.randomlyLetKakashiWalk();
 
 		// Draw a fullscreen rectangle on with an alpha
-		this.graphics.setColor(new Color(0, 0, 0, TateColors.STANDARD_BACKGROUND_ALPHA));
+		this.graphics.setColor(new Color(0, 0, 0, TateColors.HIGH_BACKGROUND_ALPHA));
 		ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
 
 		// Draw the title

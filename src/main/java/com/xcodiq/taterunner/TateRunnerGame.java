@@ -4,7 +4,6 @@ import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.manager.Manager;
 import com.xcodiq.taterunner.manager.implementation.*;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.implementation.CosmeticShopScreen;
 import com.xcodiq.taterunner.screen.implementation.SplashScreen;
 import com.xcodiq.taterunner.state.State;
 import de.gurkenlabs.litiengine.Game;

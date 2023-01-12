@@ -7,8 +7,8 @@ public final class ExitButton extends Button {
 
 	public ExitButton(double x, double y) {
 		super(
-				ImageUtil.loadImage("textures/button/exit/exit-unfocussed.png", 115, 45),
-				ImageUtil.loadImage("textures/button/exit/exit-focussed.png", 115, 45),
+				ImageUtil.loadImage("textures/button/exit/exit-unfocussed.png", 138, 54),
+				ImageUtil.loadImage("textures/button/exit/exit-focussed.png", 138, 54),
 				x, y);
 
 		this.setClickEvent(mouseEvent -> System.exit(0));

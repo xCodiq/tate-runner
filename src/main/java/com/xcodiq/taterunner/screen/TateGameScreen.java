@@ -1,8 +1,8 @@
 package com.xcodiq.taterunner.screen;
 
 import com.xcodiq.taterunner.TateRunnerGame;
-import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.screen.button.Button;
+import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.editor.ImageEditor;
 import com.xcodiq.taterunner.util.editor.TextEditor;
 import com.xcodiq.taterunner.util.text.TextUtil;
@@ -13,16 +13,13 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class TateGameScreen extends GameScreen implements TextEditor, ImageEditor {
 
 	protected final TateRunnerGame tateRunner;
 
-	private final List<Button> buttons = new ArrayList<>();
+	private final Map<Class<? extends Button>, Button> buttonsMap = new HashMap();
 	private final Method keystrokeMethod;
 
 	protected Graphics2D graphics;
@@ -91,16 +88,22 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 		ImageRenderer.render(this.graphics, image, x, y);
 	}
 
+	public void renderButton(Class<? extends Button> buttonClass) {
+		final Button button = this.buttonsMap.get(buttonClass);
+
+		if (button != null) button.render(this);
+	}
+
 	public void drawBackgroundImage(BufferedImage image) {
 		this.drawImage(0, 0, image);
 	}
 
-	public List<Button> getButtons() {
-		return buttons;
+	public Collection<Button> getButtons() {
+		return buttonsMap.values();
 	}
 
 	public void addButton(Button button) {
-		this.buttons.add(button);
+		this.buttonsMap.put(button.getClass(), button);
 	}
 
 	@Override

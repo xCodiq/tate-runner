@@ -11,20 +11,19 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public final class ProfileManager extends Manager {
-	private static final String STORAGE_PATH = "/TateRunner/profiles/";
+	private static final String STORAGE_PATH = "/profiles/",
+			DEV_PATH = "C:\\Users\\elmar\\Documents\\Saxion\\TateRunner";
 	private static final File STORAGE_FOLDER;
-	private static final String DEV_STORAGE_FOLDER = "C:\\Users\\elmar\\OneDrive%20-%20Saxion\\Leerjaar1\\IdeaProjects\\ItsInTheGame\\tate-runner\\profiles";
 
 	static {
-		STORAGE_FOLDER = new File(ProfileManager.class.getProtectionDomain().getCodeSource().getLocation().getPath(),
-				STORAGE_PATH);
+//		final String path = ProfileManager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		STORAGE_FOLDER = new File(DEV_PATH, STORAGE_PATH);
 	}
 
 	private final Gson gson;
 
 	private File profileFile;
 	private Profile profile;
-
 
 	public ProfileManager(TateRunnerGame tateRunnerGame) {
 		super(tateRunnerGame);
@@ -33,10 +32,8 @@ public final class ProfileManager extends Manager {
 		this.gson = new Gson();
 
 		// Check if the storage folder exists
-		if (!STORAGE_FOLDER.exists()) STORAGE_FOLDER.mkdirs();
-
-		final File file = new File(DEV_STORAGE_FOLDER);
-		if (!file.exists()) file.mkdirs();
+		final boolean exists = STORAGE_FOLDER.exists();
+		if (!exists) STORAGE_FOLDER.mkdirs();
 	}
 
 	@Override
@@ -46,7 +43,7 @@ public final class ProfileManager extends Manager {
 		try {
 			final String name = InetAddress.getLocalHost().getHostName();
 
-			this.profileFile = new File(DEV_STORAGE_FOLDER, name + ".json");
+			this.profileFile = new File(STORAGE_FOLDER, name + ".json");
 			this.profile = upsertProfileFromDisk(name);
 
 			Logger.debug("[ProfileManager] Loaded profile: " + this.profile.getName());
