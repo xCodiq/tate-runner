@@ -1,9 +1,6 @@
 package com.xcodiq.taterunner.screen.button.implementation.cosmetic;
 
-import com.xcodiq.taterunner.TateRunnerGame;
-import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.button.Button;
-import com.xcodiq.taterunner.screen.implementation.CosmeticShopScreen;
 import com.xcodiq.taterunner.util.image.ImageUtil;
 
 import java.awt.event.MouseEvent;

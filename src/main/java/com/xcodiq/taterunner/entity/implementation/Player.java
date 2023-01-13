@@ -8,6 +8,7 @@ import com.xcodiq.taterunner.util.animation.ImageAnimation;
 
 @BoundContext(boundType = BoundType.BOX)
 public final class Player extends AnimatedSpriteEntity {
+	private static final int STARTING_LIVES = 3;
 	private static final float JUMP_HEIGHT = 13f;
 
 	private static final float GRAVITY = 0.75f;
@@ -15,6 +16,8 @@ public final class Player extends AnimatedSpriteEntity {
 
 	public double jumpVelocity = INITIAL_JUMP_VELOCITY;
 	private boolean jumping = false;
+
+	private int lives = STARTING_LIVES;
 
 	public Player(double startingX, double startingY) {
 		super(new ImageAnimation("kakashi", 24, 100, 200, 200),

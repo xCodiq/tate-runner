@@ -6,6 +6,7 @@ import com.xcodiq.taterunner.asset.image.TateImages;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.screen.button.implementation.ReturnButton;
+import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticScenesButton;
 import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticSpritesButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
@@ -23,16 +24,20 @@ public final class CosmeticShopScreen extends TateGameScreen {
 		this.addButton(new ReturnButton(20, 20, mouseEvent -> {
 			switch (this.shopState) {
 				case MAIN_MENU ->
-						// Show the splash screen again
+					// Show the splash screen again
 						tateRunner.getManager(ScreenManager.class).showScreen(SplashScreen.class);
 				case SPRITES_MENU, SCENES_MENU ->
-						// Switch the state back to main menu state
+					// Switch the state back to main menu state
 						this.shopState = ShopState.MAIN_MENU;
 			}
 		}));
 
 		this.addButton(new CosmeticSpritesButton(496, 380, mouseEvent -> {
 			this.shopState = ShopState.SPRITES_MENU;
+		}));
+
+		this.addButton(new CosmeticScenesButton(1120, 380, mouseEvent -> {
+			this.shopState = ShopState.SCENES_MENU;
 		}));
 	}
 
@@ -42,17 +47,16 @@ public final class CosmeticShopScreen extends TateGameScreen {
 		this.drawBackgroundImage(TateImages.MARKET_BACKGROUND.toImage());
 
 		// Draw a fullscreen rectangle on with an alpha
-		this.graphics.setColor(new Color(0, 0, 0, TateColors.MEDIUM_BACKGROUND_ALPHA));
-		ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
+		this.drawFullscreenCover(new Color(0, 0, 0, TateColors.MEDIUM_BACKGROUND_ALPHA));
 
 		// Draw the header rectangle on with alpha
-		this.graphics.setColor(new Color(248, 149, 68, TateColors.MEDIUM_BACKGROUND_ALPHA));
-		ShapeRenderer.render(this.graphics, new Rectangle(1920, 75), 0, 108 * TateRunnerGame.IMAGE_SCALE);
+		this.drawRectangle(0, 110, new Rectangle(1920, 75),
+				new Color(248, 149, 68, TateColors.MEDIUM_BACKGROUND_ALPHA));
 
 		// Draw the title
 		final String title = "COSMETIC SHOP";
-		this.drawCenteredText(0, (int) (-330 * TateRunnerGame.IMAGE_SCALE), Color.decode("#543603"), 120f, title); // shadow
-		this.drawCenteredText(0, (int) (-335 * TateRunnerGame.IMAGE_SCALE), Color.decode("#ffb52b"), 120f, title); // text
+		this.drawCenteredText(0, -330, Color.decode("#543603"), 140f, title); // shadow
+		this.drawCenteredText(0, -335, Color.decode("#ffb52b"), 140f, title); // text
 
 		// Render the return button
 		this.renderButton(ReturnButton.class);
@@ -60,17 +64,18 @@ public final class CosmeticShopScreen extends TateGameScreen {
 		// Draw things according to the shop state
 		switch (this.shopState) {
 			case MAIN_MENU -> {
+				final Color orangeBoxColor = new Color(248, 149, 68, TateColors.LOW_BACKGROUND_ALPHA);
+
 				// Draw the two category button borders
-				this.graphics.setColor(new Color(248, 149, 68, TateColors.LOW_BACKGROUND_ALPHA));
-				ShapeRenderer.render(this.graphics, new Rectangle((int) (500 * TateRunnerGame.IMAGE_SCALE), (int) (500 * TateRunnerGame.IMAGE_SCALE)), (250 + 150) * TateRunnerGame.IMAGE_SCALE, 360 * TateRunnerGame.IMAGE_SCALE);
+				this.drawRectangle(400, 360, new Rectangle(500, 500), orangeBoxColor);
+				this.drawRectangle(1020, 360, new Rectangle(500, 500), orangeBoxColor);
 
-				this.graphics.setColor(new Color(248, 149, 68, TateColors.LOW_BACKGROUND_ALPHA));
-				ShapeRenderer.render(this.graphics, new Rectangle((int) (500 * TateRunnerGame.IMAGE_SCALE), (int) (500 * TateRunnerGame.IMAGE_SCALE)), (1170 - 150) * TateRunnerGame.IMAGE_SCALE, 360 * TateRunnerGame.IMAGE_SCALE);
-
+				// Render the two category buttons
 				this.renderButton(CosmeticSpritesButton.class);
+				this.renderButton(CosmeticScenesButton.class);
 			}
 			case SPRITES_MENU -> {
-//				this.drawText();
+				//s
 			}
 			case SCENES_MENU -> {
 				//f

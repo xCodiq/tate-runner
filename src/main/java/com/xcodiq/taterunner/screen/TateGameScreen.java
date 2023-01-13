@@ -7,6 +7,7 @@ import com.xcodiq.taterunner.util.editor.ImageEditor;
 import com.xcodiq.taterunner.util.editor.TextEditor;
 import com.xcodiq.taterunner.util.text.TextUtil;
 import de.gurkenlabs.litiengine.graphics.ImageRenderer;
+import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.gui.screens.GameScreen;
 
 import java.awt.*;
@@ -19,7 +20,7 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 
 	protected final TateRunnerGame tateRunner;
 
-	private final Map<Class<? extends Button>, Button> buttonsMap = new HashMap();
+	private final Map<Class<? extends Button>, Button> buttonsMap = new HashMap<>();
 	private final Method keystrokeMethod;
 
 	protected Graphics2D graphics;
@@ -63,29 +64,46 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 
 	@Override
 	public void drawText(int x, int y, Font font, Color color, float size, String text) {
-		TextUtil.drawText(this.graphics, x, y, font, color, size, text);
+		TextUtil.drawText(this.graphics,
+				(int) (x * TateRunnerGame.IMAGE_SCALE), (int) (y * TateRunnerGame.IMAGE_SCALE),
+				font, color, size * TateRunnerGame.IMAGE_SCALE, text);
 	}
 
 	@Override
 	public void drawCenteredText(int xOffset, int yOffset, Font font, Color color, float size, String text) {
 		TextUtil.drawCenteredText(this.graphics, TateRunnerGame.WIDTH, TateRunnerGame.HEIGHT,
-				xOffset, yOffset, font, color, size, text);
+				(int) (xOffset * TateRunnerGame.IMAGE_SCALE), (int) (yOffset * TateRunnerGame.IMAGE_SCALE),
+				font, color, size * TateRunnerGame.IMAGE_SCALE, text);
 	}
 
 	@Override
 	public void drawAnimatedText(int x, int y, int interval, Font font, Color color, float size, String... frames) {
-		TextUtil.drawAnimatedText(this.graphics, x, y, interval, font, color, size, frames);
+		TextUtil.drawAnimatedText(this.graphics,
+				(int) (x * TateRunnerGame.IMAGE_SCALE), (int) (y * TateRunnerGame.IMAGE_SCALE),
+				interval, font, color, size * TateRunnerGame.IMAGE_SCALE, frames);
 	}
 
 	@Override
 	public void drawCenteredAnimatedText(int xOffset, int yOffset, int interval, Font font, Color color, float size, String... frames) {
 		TextUtil.drawCenteredAnimatedText(this.graphics, TateRunnerGame.WIDTH, TateRunnerGame.HEIGHT,
-				xOffset, yOffset, interval, font, color, size, frames);
+				xOffset, yOffset, interval, font, color, size * TateRunnerGame.IMAGE_SCALE, frames);
 	}
 
 	@Override
 	public void drawImage(double x, double y, BufferedImage image) {
-		ImageRenderer.render(this.graphics, image, x, y);
+		ImageRenderer.render(this.graphics, image,
+				x * TateRunnerGame.IMAGE_SCALE - image.getWidth(),
+				y * TateRunnerGame.IMAGE_SCALE - image.getHeight());
+	}
+
+	public void drawRectangle(double x, double y, Rectangle rectangle, Color color) {
+		this.graphics.setColor(color);
+		ShapeRenderer.render(this.graphics,
+				new Rectangle(
+						(int) (rectangle.getWidth() * TateRunnerGame.IMAGE_SCALE),
+						(int) (rectangle.getHeight() * TateRunnerGame.IMAGE_SCALE)),
+				(int) (x * TateRunnerGame.IMAGE_SCALE),
+				(int) (y * TateRunnerGame.IMAGE_SCALE));
 	}
 
 	public void renderButton(Class<? extends Button> buttonClass) {
@@ -94,8 +112,17 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 		if (button != null) button.render(this);
 	}
 
+	public void renderAllButtons() {
+		this.getButtons().forEach(button -> button.render(this));
+	}
+
 	public void drawBackgroundImage(BufferedImage image) {
-		this.drawImage(0, 0, image);
+		ImageRenderer.render(this.graphics, image, 0, 0);
+	}
+
+	public void drawFullscreenCover(Color color) {
+		this.graphics.setColor(color);
+		ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
 	}
 
 	public Collection<Button> getButtons() {
