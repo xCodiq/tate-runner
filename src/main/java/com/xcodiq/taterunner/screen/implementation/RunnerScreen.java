@@ -4,8 +4,11 @@ import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
+import com.xcodiq.taterunner.manager.implementation.ProfileManager;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
+import com.xcodiq.taterunner.profile.Profile;
 import com.xcodiq.taterunner.screen.TateGameScreen;
+import com.xcodiq.taterunner.screen.background.GameBackgrounds;
 import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticShopButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.screen.render.BackgroundRender;
@@ -22,9 +25,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class RunnerScreen extends TateGameScreen {
 
 	private final StateManager stateManager;
+	private final Profile profile;
 
 	private final Player player;
-	private final double floorYCoordinate = 777;
+	private final double floorYCoordinate;
 	private final BufferedImage backgroundImage;
 	private final BackgroundRender backgroundRender;
 	private final Font gameFont, gameTextFont;
@@ -35,13 +39,18 @@ public final class RunnerScreen extends TateGameScreen {
 	public RunnerScreen(TateRunnerGame tateRunner) {
 		super(tateRunner, "Runner");
 		this.stateManager = tateRunner.getManager(StateManager.class);
+		this.profile = tateRunner.getManager(ProfileManager.class).getProfile();
+
+		// Get the currently selected game background from the profile
+		final GameBackgrounds gameBackground = this.profile.getCurrentGameBackground();
+		this.floorYCoordinate = gameBackground.getFloorCoordinate();
 
 		// Initialize a new player
-		this.player = new Player(580, floorYCoordinate);
+		this.player = new Player(580, this.floorYCoordinate);
 		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() == State.RUNNING);
 
 		// Load the background image
-		this.backgroundImage = ImageUtil.loadImage("textures/background/dark-forest.png");
+		this.backgroundImage = gameBackground.getBackgroundImage().toImage();
 
 		// Set up font
 		this.gameFont = TateFonts.PRIMARY_TITLE.toFont();
@@ -133,7 +142,7 @@ public final class RunnerScreen extends TateGameScreen {
 						"Press  >ESC<  to resume the game");
 
 				// Set the pause menu buttons to visible
-				this.getButtons().forEach(button -> button.render(this));
+				this.renderAllButtons();
 			}
 		}
 	}
@@ -176,8 +185,8 @@ public final class RunnerScreen extends TateGameScreen {
 		}
 
 		// Draw the actual background image
-		this.drawImage(backgroundRender.getBackgroundX(), 0, this.backgroundImage);
-		this.drawImage(backgroundRender.getNextBackgroundX(), 0, this.backgroundImage);
+		this.drawBackgroundImage(this.backgroundImage, backgroundRender.getBackgroundX());
+		this.drawBackgroundImage(this.backgroundImage, backgroundRender.getNextBackgroundX());
 	}
 
 	private void updateRock() {

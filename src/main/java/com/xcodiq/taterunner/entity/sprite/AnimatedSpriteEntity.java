@@ -32,13 +32,13 @@ public class AnimatedSpriteEntity extends Entity {
 
 		// Check if the animation should be paused
 		if (this.pauseAnimationCondition != null && !this.pauseAnimationCondition.get()) {
-			tateGameScreen.drawImage(this.x, this.y, this.lastSpriteAnimationFrame);
+			tateGameScreen.drawStaticImage(this.x, this.y, this.lastSpriteAnimationFrame);
 			return;
 		}
 
 		// Draw the sprite image
 		final BufferedImage currentFrame = this.spriteAnimation.getCurrentFrame();
-		tateGameScreen.drawImage(this.x, this.y, currentFrame);
+		tateGameScreen.drawStaticImage(this.x, this.y, currentFrame);
 
 		// Save the last frame in case we need to render it again or use it somewhere else
 		this.lastSpriteAnimationFrame = currentFrame;
@@ -51,7 +51,7 @@ public class AnimatedSpriteEntity extends Entity {
 			ShapeRenderer.render(tateGameScreen.getGraphics(), this.boundingBox.getShape());
 		}
 
-		tateGameScreen.drawImage(this.x, this.y, this.lastSpriteAnimationFrame);
+		tateGameScreen.drawStaticImage(this.x, this.y, this.lastSpriteAnimationFrame);
 	}
 
 	public ImageAnimation getSpriteAnimation() {

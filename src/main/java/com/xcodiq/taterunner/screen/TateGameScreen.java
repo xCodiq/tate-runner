@@ -96,6 +96,10 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 				y * TateRunnerGame.IMAGE_SCALE - image.getHeight());
 	}
 
+	public void drawStaticImage(double x, double y, BufferedImage image) {
+		ImageRenderer.render(this.graphics, image, x, y);
+	}
+
 	public void drawRectangle(double x, double y, Rectangle rectangle, Color color) {
 		this.graphics.setColor(color);
 		ShapeRenderer.render(this.graphics,
@@ -116,8 +120,12 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 		this.getButtons().forEach(button -> button.render(this));
 	}
 
+	public void drawBackgroundImage(BufferedImage image, double x) {
+		ImageRenderer.render(this.graphics, image, x, 0);
+	}
+
 	public void drawBackgroundImage(BufferedImage image) {
-		ImageRenderer.render(this.graphics, image, 0, 0);
+		this.drawBackgroundImage(image, 0);
 	}
 
 	public void drawFullscreenCover(Color color) {
