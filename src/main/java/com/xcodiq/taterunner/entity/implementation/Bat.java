@@ -13,6 +13,6 @@ import com.xcodiq.taterunner.util.image.ImageUtil;
 public final class Bat extends AnimatedSpriteEntity {
 
     public Bat(double startingX, double startingY, int width, int height) {
-        super(new ImageAnimation("bat", 4,100,width,height), startingX, startingY);
+        super(new ImageAnimation("bat", 4,100, width,height), startingX, startingY);
     }
 }

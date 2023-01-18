@@ -20,8 +20,9 @@ public final class Player extends AnimatedSpriteEntity {
 	private int lives = STARTING_LIVES;
 
 	public Player(double startingX, double startingY) {
-		super(new ImageAnimation("kakashi", 24, 100, 200, 200),
-				startingX, startingY);
+		super(new ImageAnimation("oliver", 8, 75, (int) (260/1.6),(int)( 223/1.6)), startingX, startingY);
+//		super(new ImageAnimation("kakashi", 24, 100, 200, 200), startingX, startingY);
+//		super(new ImageAnimation("amongus", 24, 20, 462/3, 730/3), startingX, startingY);
 	}
 
 	@Override
