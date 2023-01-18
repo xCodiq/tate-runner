@@ -36,7 +36,7 @@ public final class MouseManager extends Manager {
 
 				for (Button button : tateGameScreen.getButtons()) {
 					final Point point = clickEvent.getPoint();
-					if (button.getRectangle().contains(point)) {
+					if (button.getRectangle().contains(point) && button.canClick()) {
 						button.getClickConsumer().accept(clickEvent);
 						return;
 					}

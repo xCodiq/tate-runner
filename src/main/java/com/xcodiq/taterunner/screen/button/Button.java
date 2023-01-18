@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class Button {
 
@@ -19,6 +20,7 @@ public class Button {
 
 	private boolean visible = true, focused = false;
 	private Consumer<MouseEvent> clickConsumer;
+	private Predicate<Void> clickCondition;
 
 	public Button(BufferedImage unfocusedImage, BufferedImage focusedImage, double x, double y) {
 		this.unfocusedImage = unfocusedImage;
@@ -39,6 +41,20 @@ public class Button {
 
 	public Consumer<MouseEvent> getClickConsumer() {
 		return this.clickConsumer;
+	}
+
+	public void setClickCondition(Predicate<Void> clickCondition) {
+		this.clickCondition = clickCondition;
+	}
+
+	public Predicate<Void> getClickCondition() {
+		return clickCondition;
+	}
+
+	public boolean canClick() {
+		if (this.clickCondition == null) return true;
+
+		return this.clickCondition.test(null);
 	}
 
 	public void render(TateGameScreen tateGameScreen, boolean shouldRender) {

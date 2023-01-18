@@ -13,7 +13,6 @@ import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticShopB
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.animation.ImageAnimation;
 import de.gurkenlabs.litiengine.Game;
-import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -35,10 +34,10 @@ public final class SplashScreen extends TateGameScreen {
 
 		// Create all the buttons for this screen
 		this.addButton(new ExitButton(20, 20));
-		this.addButton(new OptionsButton(20 + 138 + 45, 20));
-		this.addButton(new CosmeticShopButton(tateRunner, 20 + 138 + 45 + 138 + 45, 20));
+		this.addButton(new OptionsButton(178, 20));
+		this.addButton(new CosmeticShopButton(tateRunner, 336, 20));
 
-		// Initialize the player
+		// Initialize a new animation for the kakashi image that randomly appears on the screen
 		this.kakashiAnimation = new ImageAnimation("kakashi", 24, 100, kakashiHeight, kakashiHeight);
 	}
 

@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class TateRunnerGame implements IGame {
 
-	public static float IMAGE_SCALE = 1f;
+	public static float IMAGE_SCALE;
 	public static int GAME_WIDTH, GAME_HEIGHT, WIDTH, HEIGHT;
 	public static double GRAVITY;
 
@@ -34,7 +34,7 @@ public class TateRunnerGame implements IGame {
 		IMAGE_SCALE = WIDTH / (float) GAME_WIDTH;
 
 		GRAVITY = 2.3;
-		DEBUG_MODE = false; // set to true to enable debug mode
+		DEBUG_MODE = true; // set to true to enable debug mode
 		INSTANCE = null;
 	}
 
