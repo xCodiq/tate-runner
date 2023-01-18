@@ -4,6 +4,8 @@ import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
+import com.xcodiq.taterunner.entity.implementation.Bat;
+import com.xcodiq.taterunner.entity.implementation.Coins;
 import com.xcodiq.taterunner.manager.implementation.ProfileManager;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
 import com.xcodiq.taterunner.profile.Profile;
@@ -13,9 +15,11 @@ import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticShopB
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.screen.render.BackgroundRender;
 import com.xcodiq.taterunner.state.State;
-import com.xcodiq.taterunner.util.image.ImageUtil;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
+
+import java.util.Arrays;
+import java.util.Random;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -33,8 +37,13 @@ public final class RunnerScreen extends TateGameScreen {
 	private final BackgroundRender backgroundRender;
 	private final Font gameFont, gameTextFont;
 	private Rock rock;
+
+	private Coins coins;
+	private Bat bat;
 	private int distanceWalked;
 	private double gameSpeed;
+
+	public final Random random = new Random();
 
 	public RunnerScreen(TateRunnerGame tateRunner) {
 		super(tateRunner, "Runner");
@@ -79,6 +88,12 @@ public final class RunnerScreen extends TateGameScreen {
 		// Render the rock
 		this.rock.render(this);
 
+		//render the bat
+		this.bat.render(this);
+
+		//render the coin
+		this.coins.render(this);
+
 		// Render the player
 		this.player.render(this);
 
@@ -89,10 +104,24 @@ public final class RunnerScreen extends TateGameScreen {
 				if (this.player.collidesWith(this.rock)) {
 					this.stateManager.setCurrentState(State.DIED);
 					return;
+				} else if (this.player.collidesWith(this.bat)) {
+					this.stateManager.setCurrentState(State.DIED);
+					return;
+				} else if (this.player.collidesWith(this.coins)) {
+					int coins = 0;
+					coins++;
+					this.coins.reset();
+					return;
 				}
 
 				// Update the rock
 				this.updateRock();
+
+				//update the bat
+				this.updateBat();
+
+				//update coins
+				this.updateCoins();
 
 				// Display the distance walked text
 				this.drawCenteredText(0, 400, this.gameFont, Color.ORANGE,
@@ -194,17 +223,40 @@ public final class RunnerScreen extends TateGameScreen {
 
 		if (this.rock.getX() < -this.rock.getWidth()) {
 			final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
-			final int randomDistance = ThreadLocalRandom.current().nextInt(600, 1750);
-			this.rock = new Rock(TateRunnerGame.GAME_WIDTH + randomDistance, this.floorYCoordinate,
+			this.rock = new Rock(TateRunnerGame.GAME_WIDTH , this.floorYCoordinate,
+					randomSize, randomSize);
+		}
+	}
+
+	private void updateBat() {
+		this.bat.update(this.gameSpeed);
+
+		if (this.bat.getX() < -this.bat.getWidth()) {
+			final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+			this.bat = new Bat(TateRunnerGame.GAME_WIDTH , this.floorYCoordinate -250,
+					randomSize, randomSize);
+		}
+	}
+
+	private void updateCoins() {
+		this.coins.update(this.gameSpeed);
+
+		if (this.coins.getX() < -this.coins.getWidth()) {
+			final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+			this.coins = new Coins(TateRunnerGame.GAME_WIDTH , this.floorYCoordinate,
 					randomSize, randomSize);
 		}
 	}
 
 	private void restart() {
+
 		// Reset the entities
 		this.player.reset();
 		final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+
 		this.rock = new Rock(TateRunnerGame.GAME_WIDTH + 500, this.floorYCoordinate, randomSize, randomSize);
+		this.bat = new Bat(TateRunnerGame.GAME_WIDTH +1000,this.floorYCoordinate -250, randomSize, randomSize);
+		this.coins = new Coins(TateRunnerGame.GAME_WIDTH +1000,this.floorYCoordinate, randomSize, randomSize);
 
 		// Reset the background and values
 		this.backgroundRender.reset();
