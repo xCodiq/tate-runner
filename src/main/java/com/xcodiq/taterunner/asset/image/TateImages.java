@@ -9,7 +9,11 @@ public enum TateImages implements TateImage {
 	DARK_FOREST_BACKGROUND("textures/background/dark-forest.png"),
 	LIGHT_FOREST_BACKGROUND("textures/background/light-forest.png"),
 	GRAVEYARD_BACKGROUND("textures/background/graveyard.png"),
-	MARKET_BACKGROUND("textures/background/market.png");
+	MARKET_BACKGROUND("textures/background/market.png"),
+
+	HEART_FULL("textures/heart/heart-full.png"),
+	HEART_2LEFT("textures/heart/heart-2left.png"),
+	HEART_1LEFT("textures/heart/heart-1left.png");
 
 	private final String path;
 

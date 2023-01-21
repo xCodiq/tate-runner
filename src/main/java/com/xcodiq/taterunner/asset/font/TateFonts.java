@@ -1,5 +1,6 @@
 package com.xcodiq.taterunner.asset.font;
 
+import com.xcodiq.taterunner.TateRunnerGame;
 import de.gurkenlabs.litiengine.resources.Resources;
 
 import java.awt.*;
@@ -30,6 +31,11 @@ public enum TateFonts implements TateFont {
 
 	@Override
 	public Font toFont() {
-		return Resources.fonts().get(this.path, this.defaultFontSize);
+		return Resources.fonts().get(this.path);
+	}
+
+	@Override
+	public Font toFont(float size) {
+		return Resources.fonts().get(this.path, size * TateRunnerGame.IMAGE_SCALE);
 	}
 }

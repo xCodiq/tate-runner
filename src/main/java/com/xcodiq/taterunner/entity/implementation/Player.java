@@ -3,12 +3,12 @@ package com.xcodiq.taterunner.entity.implementation;
 import com.xcodiq.taterunner.entity.bound.annotation.BoundContext;
 import com.xcodiq.taterunner.entity.bound.type.BoundType;
 import com.xcodiq.taterunner.entity.sprite.AnimatedSpriteEntity;
+import com.xcodiq.taterunner.profile.Profile;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.util.animation.ImageAnimation;
 
 @BoundContext(boundType = BoundType.BOX)
 public final class Player extends AnimatedSpriteEntity {
-	private static final int STARTING_LIVES = 3;
+	public static final int STARTING_LIVES = 3;
 	private static final float JUMP_HEIGHT = 13f;
 
 	private static final float GRAVITY = 0.75f;
@@ -19,10 +19,8 @@ public final class Player extends AnimatedSpriteEntity {
 
 	private int lives = STARTING_LIVES;
 
-	public Player(double startingX, double startingY) {
-//		super(new ImageAnimation("oliver", 8, 75, (int) (260/1.6),(int)( 223/1.6)), startingX, startingY);
-//		super(new ImageAnimation("kakashi", 24, 100, 200, 200), startingX, startingY);
-		super(new ImageAnimation("amongus", 24, 20, 462/3, 730/3), startingX, startingY);
+	public Player(Profile profile, double startingX, double startingY) {
+		super(profile.getEquippedTateSprite().getRender().getImageAnimation(), startingX, startingY);
 	}
 
 	@Override
@@ -34,6 +32,8 @@ public final class Player extends AnimatedSpriteEntity {
 	@Override
 	public void reset() {
 		super.reset();
+
+		this.lives = STARTING_LIVES;
 
 		this.jumpVelocity = INITIAL_JUMP_VELOCITY;
 		this.jumping = false;
@@ -70,5 +70,13 @@ public final class Player extends AnimatedSpriteEntity {
 
 	public void setJumping(boolean jumping) {
 		this.jumping = jumping;
+	}
+
+	public int getLives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
 	}
 }

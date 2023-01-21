@@ -9,4 +9,6 @@ public interface TateFont extends Asset {
 	float getDefaultFontSize();
 
 	Font toFont();
+
+	Font toFont(float size);
 }

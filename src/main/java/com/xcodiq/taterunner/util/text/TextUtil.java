@@ -1,9 +1,9 @@
 package com.xcodiq.taterunner.util.text;
 
+import com.xcodiq.taterunner.asset.font.TateFont;
 import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.util.multiple.Pair;
 import de.gurkenlabs.litiengine.graphics.TextRenderer;
-import de.gurkenlabs.litiengine.resources.Resources;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -25,8 +25,7 @@ public final class TextUtil {
 	}
 
 	public static void drawText(Graphics2D graphics, int x, int y, Font font, Color color, float size, String text) {
-		font.deriveFont(size);
-		graphics.setFont(font);
+		graphics.setFont(font.deriveFont(size));
 
 		graphics.setColor(color);
 		TextRenderer.render(graphics, text, x, y);
@@ -109,5 +108,14 @@ public final class TextUtil {
 	public static void clearCache() {
 		currentAnimatedTextIndexes.clear();
 		currentTimings.clear();
+	}
+
+	public static int getStringWidth(Graphics2D graphics, Font font, String text) {
+		final FontMetrics metrics = graphics.getFontMetrics(font);
+		return metrics.stringWidth(text);
+	}
+
+	public static int getStringWidth(Graphics2D graphics, TateFont tateFont, float size, String text) {
+		return getStringWidth(graphics, tateFont.toFont(size), text);
 	}
 }

@@ -1,19 +1,20 @@
 package com.xcodiq.taterunner.screen.implementation;
 
 import com.xcodiq.taterunner.TateRunnerGame;
+import com.xcodiq.taterunner.asset.color.TateColors;
 import com.xcodiq.taterunner.asset.font.TateFonts;
+import com.xcodiq.taterunner.asset.image.TateImages;
+import com.xcodiq.taterunner.asset.scene.TateScene;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
 import com.xcodiq.taterunner.manager.implementation.ProfileManager;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
 import com.xcodiq.taterunner.profile.Profile;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.background.GameBackgrounds;
 import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticShopButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.screen.render.BackgroundRender;
 import com.xcodiq.taterunner.state.State;
-import com.xcodiq.taterunner.util.image.ImageUtil;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 
@@ -28,10 +29,13 @@ public final class RunnerScreen extends TateGameScreen {
 	private final Profile profile;
 
 	private final Player player;
+
 	private final double floorYCoordinate;
 	private final BufferedImage backgroundImage;
 	private final BackgroundRender backgroundRender;
+
 	private final Font gameFont, gameTextFont;
+	boolean isHurt = false;
 	private Rock rock;
 	private int distanceWalked;
 	private double gameSpeed;
@@ -42,15 +46,15 @@ public final class RunnerScreen extends TateGameScreen {
 		this.profile = tateRunner.getManager(ProfileManager.class).getProfile();
 
 		// Get the currently selected game background from the profile
-		final GameBackgrounds gameBackground = this.profile.getCurrentGameBackground();
-		this.floorYCoordinate = gameBackground.getFloorCoordinate();
+		final TateScene tateScene = this.profile.getCurrentTateScene();
+		this.floorYCoordinate = tateScene.getFloorCoordinate();
 
 		// Initialize a new player
-		this.player = new Player(580, this.floorYCoordinate);
-		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() == State.RUNNING);
+		this.player = new Player(this.profile, 580, this.floorYCoordinate);
+		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() != State.RUNNING);
 
 		// Load the background image
-		this.backgroundImage = gameBackground.getBackgroundImage().toImage();
+		this.backgroundImage = tateScene.toImage();
 
 		// Set up font
 		this.gameFont = TateFonts.PRIMARY_TITLE.toFont();
@@ -86,23 +90,28 @@ public final class RunnerScreen extends TateGameScreen {
 		switch (currentState) {
 			// Only run game progression things when current state is set to running
 			case RUNNING -> {
-				if (this.player.collidesWith(this.rock)) {
-					this.stateManager.setCurrentState(State.DIED);
+				if (!isHurt && this.player.collidesWith(this.rock)) {
+					if (this.player.getLives() == 1) {
+						this.stateManager.setCurrentState(State.DIED);
+					} else {
+						this.player.setLives(this.player.getLives() - 1);
+					}
+					this.isHurt = true;
 					return;
 				}
+				this.isHurt = this.player.collidesWith(this.rock);
 
 				// Update the rock
 				this.updateRock();
-
-				// Display the distance walked text
-				this.drawCenteredText(0, 400, this.gameFont, Color.ORANGE,
-						75f, String.valueOf(this.distanceWalked));
 
 				// Attempt to change the player's position while jumping
 				this.player.jump();
 
 				// Adjust the background coordinates
 				backgroundRender.adjust(this.gameSpeed);
+
+				// Render the scoreboard
+				this.renderScoreboard();
 
 				// Up the distance walked
 				if (Game.time().now() % (int) (80 * (1 + (this.gameSpeed / 100.0))) == 0) {
@@ -213,5 +222,34 @@ public final class RunnerScreen extends TateGameScreen {
 
 		// Set the state to running again
 		this.stateManager.setCurrentState(State.RUNNING);
+	}
+
+	private void renderScoreboard() {
+		// Draw the rectangle
+		this.drawRectangle(10, 10, new Rectangle(300, 220),
+				new Color(44, 41, 41, TateColors.MEDIUM_BACKGROUND_ALPHA));
+		this.drawRectangle(10, 10, new Rectangle(300, 40),
+				new Color(44, 41, 41, TateColors.LOW_BACKGROUND_ALPHA));
+
+		// Draw the title of the scoreboard
+		this.drawText(112 - 30, 43, Color.CYAN, 30f, "TATE RUNNER");
+
+		// Draw the coins indicator
+		this.drawText(25, 80, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.orange, 23f,
+				"Coins: " + this.profile.getCoins());
+		// Draw the distance indicator
+		this.drawText(25, 130, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.white, 23f,
+				"Score: " + this.distanceWalked + "m");
+		this.drawText(25, 150, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.gray, 23f,
+				"Highscore: " + "45m");
+
+		// Draw the hearts indicator
+		BufferedImage heartsImage = switch (this.player.getLives()) {
+			case Player.STARTING_LIVES -> TateImages.HEART_FULL.toImage(186, 40);
+			case 2 -> TateImages.HEART_2LEFT.toImage(186, 40);
+			case 1 -> TateImages.HEART_1LEFT.toImage(186, 40);
+			default -> null;
+		};
+		this.drawStaticImage(20, 135, heartsImage);
 	}
 }
