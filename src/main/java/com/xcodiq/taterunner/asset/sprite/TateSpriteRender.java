@@ -6,16 +6,25 @@ import java.awt.image.BufferedImage;
 
 public class TateSpriteRender {
 
+	private final String boundPath;
+
 	private final BufferedImage image;
 	private ImageAnimation imageAnimation;
 
-	public TateSpriteRender(BufferedImage image) {
+
+	public TateSpriteRender(String boundPath, BufferedImage image) {
+		this.boundPath = boundPath;
 		this.image = image;
 	}
 
-	public TateSpriteRender(ImageAnimation imageAnimation) {
+	public TateSpriteRender(String boundPath, ImageAnimation imageAnimation) {
+		this.boundPath = boundPath;
 		this.imageAnimation = imageAnimation;
 		this.image = null;
+	}
+
+	public String getBoundPath() {
+		return boundPath;
 	}
 
 	public BufferedImage getImage() {

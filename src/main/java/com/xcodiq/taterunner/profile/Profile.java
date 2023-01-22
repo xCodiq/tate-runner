@@ -14,6 +14,9 @@ public class Profile {
 	private final Set<TateSprites> unlockedTateSprites = new HashSet<>() {{
 		this.add(TateSprites.KAKASHI);
 	}};
+	private final Set<TateScenes> unlockedTateScenes = new HashSet<>() {{
+		this.add(TateScenes.DARK_FOREST);
+	}};
 
 	private TateScenes currentTateScene = TateScenes.DARK_FOREST;
 	private TateSprites equippedTateSprite = TateSprites.KAKASHI;
@@ -53,8 +56,16 @@ public class Profile {
 		return unlockedTateSprites;
 	}
 
+	public Set<TateScenes> getUnlockedTateScenes() {
+		return unlockedTateScenes;
+	}
+
 	public boolean ownsTateSprite(TateSprites tateSprite) {
 		return this.equippedTateSprite == tateSprite || this.unlockedTateSprites.contains(tateSprite);
+	}
+
+	public boolean ownsTateScene(TateScenes tateScene) {
+		return this.currentTateScene == tateScene || this.unlockedTateScenes.contains(tateScene);
 	}
 
 	public int getCoins() {

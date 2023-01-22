@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class StatedButton implements com.xcodiq.taterunner.screen.button.model.Button {
+public class StatedButton implements Button {
 
 	private final List<ButtonState> buttonStateList = new ArrayList<>();
 	private final Rectangle rectangle;
@@ -26,12 +26,12 @@ public class StatedButton implements com.xcodiq.taterunner.screen.button.model.B
 	private Predicate<Void> clickCondition = (v) -> true;
 	private ButtonState currentState;
 
-	private boolean visible = true, focused = false;
+	private Boolean visible = null, focused = false;
 	private Function<Void, ButtonState> buttonRenderCondition = (v) -> buttonStateList.get(0);
 
-	public StatedButton(ButtonState[] buttonStates, double x, double y, int width, int height) {
-		this.buttonStateList.addAll(List.of(buttonStates));
-		this.currentState = buttonStates[0];
+	public StatedButton(List<ButtonState> buttonStates, double x, double y, int width, int height) {
+		this.buttonStateList.addAll(buttonStates);
+		this.currentState = buttonStates.get(0);
 
 		this.width = width;
 		this.height = height;
@@ -44,7 +44,8 @@ public class StatedButton implements com.xcodiq.taterunner.screen.button.model.B
 
 	@Override
 	public void render(TateGameScreen tateGameScreen, boolean shouldRender) {
-		if (!this.visible || !shouldRender || this.currentState == null) return;
+		this.visible = shouldRender;
+		if (!shouldRender || this.currentState == null) return;
 
 		final Pair<BufferedImage, BufferedImage> imagesPair = this.currentState.getImages();
 		tateGameScreen.drawStaticImage(this.x, this.y, this.focused
@@ -110,5 +111,15 @@ public class StatedButton implements com.xcodiq.taterunner.screen.button.model.B
 	@Override
 	public boolean canClick() {
 		return this.clickCondition == null || this.clickCondition.test(null);
+	}
+
+	@Override
+	public boolean isVisible() {
+		return Boolean.TRUE.equals(this.visible);
+	}
+
+	@Override
+	public void setVisible(Boolean visible) {
+		this.visible = visible != null && visible;
 	}
 }

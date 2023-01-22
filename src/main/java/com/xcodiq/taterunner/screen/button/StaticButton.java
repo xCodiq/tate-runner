@@ -22,7 +22,7 @@ public class StaticButton implements Button {
 	private Runnable clickAction;
 	private Predicate<Void> clickCondition = (v) -> true;
 
-	private boolean visible = true, focused = false;
+	private Boolean visible = null, focused = false;
 
 	public StaticButton(BufferedImage unfocusedImage, BufferedImage focusedImage, double x, double y) {
 		this.buttonState = new State(unfocusedImage, focusedImage);
@@ -38,7 +38,8 @@ public class StaticButton implements Button {
 
 	@Override
 	public void render(TateGameScreen tateGameScreen, boolean shouldRender) {
-		if (!this.visible || !shouldRender || this.buttonState == null) return;
+		this.visible = shouldRender;
+		if (/*!this.visible || */!shouldRender || this.buttonState == null) return;
 
 		tateGameScreen.drawStaticImage(this.x, this.y, this.focused
 				? this.buttonState.getFocusedImage() : this.buttonState.getUnfocusedImage());
@@ -97,6 +98,16 @@ public class StaticButton implements Button {
 	@Override
 	public boolean canClick() {
 		return this.clickCondition == null || this.clickCondition.test(null);
+	}
+
+	@Override
+	public boolean isVisible() {
+		return Boolean.TRUE.equals(this.visible);
+	}
+
+	@Override
+	public void setVisible(Boolean visible) {
+		this.visible = visible != null && visible;
 	}
 
 	private static class State implements ButtonState {

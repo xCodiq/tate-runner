@@ -35,4 +35,8 @@ public interface Button {
 	void setClickCondition(Predicate<Void> clickCondition);
 
 	boolean canClick();
+
+	boolean isVisible();
+
+	void setVisible(Boolean visible);
 }

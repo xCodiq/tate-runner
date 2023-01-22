@@ -1,6 +1,5 @@
 package com.xcodiq.taterunner.screen.button.implementation.cosmetic.item;
 
-import com.xcodiq.taterunner.screen.button.StatedButton;
 import com.xcodiq.taterunner.screen.button.model.ButtonState;
 import com.xcodiq.taterunner.util.image.ImageUtil;
 import com.xcodiq.taterunner.util.multiple.Pair;
@@ -8,13 +7,8 @@ import com.xcodiq.taterunner.util.multiple.Pair;
 import java.awt.image.BufferedImage;
 import java.util.Locale;
 
-public class CosmeticShopItemButton extends StatedButton {
+public enum ShopItemButtonState implements ButtonState {
 
-	public CosmeticShopItemButton(double x, double y) {
-		super(State.values(), x, y, 346, 56);
-	}
-
-	public enum State implements ButtonState {
 		EQUIPPED(new Pair<>(
 				ImageUtil.loadImage("textures/button/cosmeticshop/item/equipped/equipped-item-unfocussed.png"),
 				ImageUtil.loadImage("textures/button/cosmeticshop/item/equipped/equipped-item-unfocussed.png")
@@ -30,7 +24,7 @@ public class CosmeticShopItemButton extends StatedButton {
 
 		private final Pair<BufferedImage, BufferedImage> images;
 
-		State(Pair<BufferedImage, BufferedImage> images) {
+		ShopItemButtonState(Pair<BufferedImage, BufferedImage> images) {
 			this.images = images;
 		}
 
@@ -44,4 +38,3 @@ public class CosmeticShopItemButton extends StatedButton {
 			return this.images;
 		}
 	}
-}

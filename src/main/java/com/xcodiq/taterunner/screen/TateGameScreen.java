@@ -22,9 +22,12 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 	protected final TateRunnerGame tateRunner;
 
 	private final Map<Class<? extends Button>, Collection<Button>> buttonsMap = new HashMap<>();
+	private final Set<Class<? extends Button>> currentRenderedButtons = new HashSet<>();
+
 	private final Method keystrokeMethod;
 
 	protected Graphics2D graphics;
+	private long renderButtonClearDelay = System.currentTimeMillis();
 
 	public TateGameScreen(TateRunnerGame tateRunner, String name) {
 		super(name);
@@ -48,6 +51,11 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 
 		// Call the abstract render method
 		this.render();
+
+		if (System.currentTimeMillis() - renderButtonClearDelay > 500) {
+			this.currentRenderedButtons.clear();
+			renderButtonClearDelay = System.currentTimeMillis();
+		}
 	}
 
 	public abstract void render();
@@ -114,10 +122,13 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 	public void renderButton(Class<? extends Button> buttonClass) {
 		final Collection<Button> buttons = this.buttonsMap.get(buttonClass);
 		buttons.stream().filter(Objects::nonNull).forEach(button -> button.render(this));
+		this.currentRenderedButtons.add(buttonClass);
 	}
 
 	public void renderAllButtons() {
-		this.getButtons().forEach(button -> button.render(this));
+		for (Class<? extends Button> buttonClass : this.buttonsMap.keySet()) {
+			this.renderButton(buttonClass);
+		}
 	}
 
 	public void drawBackgroundImage(BufferedImage image, double x) {
@@ -135,7 +146,6 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 
 	public Collection<Button> getButtons() {
 		return buttonsMap.values().stream().flatMap(Collection::stream).toList();
-
 	}
 
 	public void addButton(Button button) {
@@ -151,6 +161,10 @@ public abstract class TateGameScreen extends GameScreen implements TextEditor, I
 
 	private <T extends Button> Collection<Button> getButtonCollection(Class<T> buttonClass) {
 		return this.buttonsMap.computeIfAbsent(buttonClass, key -> new ArrayList<>());
+	}
+
+	public Set<Class<? extends Button>> getCurrentRenderedButtons() {
+		return currentRenderedButtons;
 	}
 
 	@Override

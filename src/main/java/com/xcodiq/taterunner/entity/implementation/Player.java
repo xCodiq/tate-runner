@@ -3,6 +3,7 @@ package com.xcodiq.taterunner.entity.implementation;
 import com.xcodiq.taterunner.entity.bound.annotation.BoundContext;
 import com.xcodiq.taterunner.entity.bound.type.BoundType;
 import com.xcodiq.taterunner.entity.sprite.AnimatedSpriteEntity;
+import com.xcodiq.taterunner.logger.Logger;
 import com.xcodiq.taterunner.profile.Profile;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 
@@ -21,6 +22,13 @@ public final class Player extends AnimatedSpriteEntity {
 
 	public Player(Profile profile, double startingX, double startingY) {
 		super(profile.getEquippedTateSprite().getRender().getImageAnimation(), startingX, startingY);
+
+		try {
+			// Update the bound context of the player according to the equipped sprite
+			this.updateBoundContext(BoundType.POLYGON, profile.getEquippedTateSprite().getRender().getBoundPath());
+		} catch (Exception ignored) {
+			Logger.debug("Failed to update bound context of player! Setting to default: BOX");
+		}
 	}
 
 	@Override

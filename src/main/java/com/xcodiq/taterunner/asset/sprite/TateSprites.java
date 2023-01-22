@@ -7,9 +7,12 @@ import java.awt.image.BufferedImage;
 import java.util.Locale;
 
 public enum TateSprites implements TateSprite {
-	KAKASHI("", new TateSpriteRender(new ImageAnimation("kakashi", 24, 100, 200, 200)), 100),
-	OLIVER("", new TateSpriteRender(new ImageAnimation("oliver", 8, 75, 163, 140)), 500),
-	AMONGUS("", new TateSpriteRender(new ImageAnimation("amongus", 24, 20, 123, 194)), 1000),
+	KAKASHI("", new TateSpriteRender("sprites/kakashi/kakashi.bounds",
+			new ImageAnimation("kakashi", 24, 100, 200, 200)), 100),
+	OLIVER("", new TateSpriteRender("sprites/oliver/oliver.bounds",
+			new ImageAnimation("oliver", 8, 75, 195, 167)), 500),
+	ROSCOE("", new TateSpriteRender("sprites/oliver/oliver.bounds",
+			new ImageAnimation("roscoe", 10, 75, 182, 173)), 1000),
 	;
 
 	private final String path;
