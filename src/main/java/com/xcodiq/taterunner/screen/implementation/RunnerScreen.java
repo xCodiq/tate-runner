@@ -28,15 +28,17 @@ public final class RunnerScreen extends TateGameScreen {
 	private final StateManager stateManager;
 	private final Profile profile;
 
-	private final Player player;
-
-	private final double floorYCoordinate;
-	private final BufferedImage backgroundImage;
 	private final BackgroundRender backgroundRender;
 
 	private final Font gameFont, gameTextFont;
-	boolean isHurt = false;
+
+	private boolean isHurt = false;
 	private Rock rock;
+
+	private Player player;
+	private BufferedImage backgroundImage;
+	private double floorYCoordinate;
+
 	private int distanceWalked;
 	private double gameSpeed;
 
@@ -44,17 +46,6 @@ public final class RunnerScreen extends TateGameScreen {
 		super(tateRunner, "Runner");
 		this.stateManager = tateRunner.getManager(StateManager.class);
 		this.profile = tateRunner.getManager(ProfileManager.class).getProfile();
-
-		// Get the currently selected game background from the profile
-		final TateScene tateScene = this.profile.getCurrentTateScene();
-		this.floorYCoordinate = tateScene.getFloorCoordinate();
-
-		// Initialize a new player
-		this.player = new Player(this.profile, 580, this.floorYCoordinate);
-		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() != State.RUNNING);
-
-		// Load the background image
-		this.backgroundImage = tateScene.toImage();
 
 		// Set up font
 		this.gameFont = TateFonts.PRIMARY_TITLE.toFont();
@@ -209,21 +200,6 @@ public final class RunnerScreen extends TateGameScreen {
 		}
 	}
 
-	private void restart() {
-		// Reset the entities
-		this.player.reset();
-		final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
-		this.rock = new Rock(TateRunnerGame.GAME_WIDTH + 500, this.floorYCoordinate, randomSize, randomSize);
-
-		// Reset the background and values
-		this.backgroundRender.reset();
-		this.distanceWalked = 0;
-		this.gameSpeed = -6.00;
-
-		// Set the state to running again
-		this.stateManager.setCurrentState(State.RUNNING);
-	}
-
 	private void renderScoreboard() {
 		// Draw the rectangle
 		this.drawRectangle(10, 10, new Rectangle(300, 220),
@@ -241,7 +217,7 @@ public final class RunnerScreen extends TateGameScreen {
 		this.drawText(25, 130, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.white, 23f,
 				"Score: " + this.distanceWalked + "m");
 		this.drawText(25, 150, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.gray, 23f,
-				"Highscore: " + "45m");
+				"Highscore: " + this.profile.getHighScore() + "m");
 
 		// Draw the hearts indicator
 		BufferedImage heartsImage = switch (this.player.getLives()) {
@@ -251,5 +227,29 @@ public final class RunnerScreen extends TateGameScreen {
 			default -> null;
 		};
 		this.drawStaticImage(20, 135, heartsImage);
+	}
+
+	private void restart() {
+		// Get the currently selected game background from the profile
+		final TateScene tateScene = this.profile.getCurrentTateScene();
+		this.floorYCoordinate = tateScene.getFloorCoordinate();
+		this.backgroundImage = tateScene.toImage();
+
+		// Initialize a new player
+		this.player = new Player(this.profile, 580, this.floorYCoordinate);
+		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() != State.RUNNING);
+		this.player.reset();
+
+		// Reset the entities
+		final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+		this.rock = new Rock(TateRunnerGame.GAME_WIDTH + 500, this.floorYCoordinate, randomSize, randomSize);
+
+		// Reset the background and values
+		this.backgroundRender.reset();
+		this.distanceWalked = 0;
+		this.gameSpeed = -6.00;
+
+		// Set the state to running again
+		this.stateManager.setCurrentState(State.RUNNING);
 	}
 }

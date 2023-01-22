@@ -44,7 +44,6 @@ public final class CosmeticShopScreen extends TateGameScreen {
 	private final int sceneStartingX = ((TateRunnerGame.GAME_WIDTH - maxMenuWidth) / 2) + (sceneMenuWidth / 2);
 	private final int sceneItemOffset = 28;
 
-
 	private ShopState shopState = ShopState.MAIN_MENU;
 
 	public CosmeticShopScreen(TateRunnerGame tateRunner) {
@@ -88,7 +87,6 @@ public final class CosmeticShopScreen extends TateGameScreen {
 
 			// Set the click action of the button
 			spriteItemButton.setClickAction(button -> {
-				System.out.println("Sprite item button clicked");
 				if (button.isCurrentState(ShopItemButtonState.EQUIP)) {
 					// Equip the sprite
 					profile.setEquippedTateSprite(sprite);
