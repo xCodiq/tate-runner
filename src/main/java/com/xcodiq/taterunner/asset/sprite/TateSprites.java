@@ -11,7 +11,7 @@ public enum TateSprites implements TateSprite {
 			new ImageAnimation("kakashi", 24, 100, 200, 200)), 100),
 	OLIVER("", new TateSpriteRender("sprites/oliver/oliver.bounds",
 			new ImageAnimation("oliver", 8, 75, 195, 167)), 500),
-	ROSCOE("", new TateSpriteRender("sprites/oliver/oliver.bounds",
+	ROSCOE("", new TateSpriteRender("sprites/roscoe/roscoe.bounds",
 			new ImageAnimation("roscoe", 10, 75, 182, 173)), 1000),
 	;
 

@@ -136,7 +136,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 					profile.setCurrentTateScene(scene);
 					button.setCurrentState(ShopItemButtonState.EQUIPPED);
 
-					final String text = "! Equipped the " + scene + " scene!";
+					final String text = "! Equipped the " + scene + " scene !";
 					this.addScreenText(Color.CYAN, text);
 				} else if (button.isCurrentState(ShopItemButtonState.PURCHASE)) {
 					if (!this.profile.hasCoins(scene.getPrice())) {

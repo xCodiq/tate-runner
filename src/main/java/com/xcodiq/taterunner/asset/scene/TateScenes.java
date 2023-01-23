@@ -11,7 +11,7 @@ import java.util.Locale;
 public enum TateScenes implements TateScene {
 
 	DARK_FOREST(TateImages.DARK_FOREST_BACKGROUND, 777, 100),
-	LIGHT_FOREST(TateImages.LIGHT_FOREST_BACKGROUND, 833, 500),
+	LIGHT_FOREST(TateImages.LIGHT_FOREST_BACKGROUND, 877, 500),
 	GRAVEYARD(TateImages.GRAVEYARD_BACKGROUND, 0, 1000);
 
 	private final TateImage backgroundImage;

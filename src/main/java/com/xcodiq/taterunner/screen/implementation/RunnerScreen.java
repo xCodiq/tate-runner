@@ -8,15 +8,15 @@ import com.xcodiq.taterunner.asset.scene.TateScene;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
 import com.xcodiq.taterunner.manager.implementation.ProfileManager;
+import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
 import com.xcodiq.taterunner.profile.Profile;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticShopButton;
+import com.xcodiq.taterunner.screen.button.implementation.ExitButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.screen.render.BackgroundRender;
 import com.xcodiq.taterunner.state.State;
 import de.gurkenlabs.litiengine.Game;
-import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -32,7 +32,7 @@ public final class RunnerScreen extends TateGameScreen {
 
 	private final Font gameFont, gameTextFont;
 
-	private boolean isHurt = false;
+	private boolean isHurt = false, highScore = false;
 	private Rock rock;
 
 	private Player player;
@@ -55,7 +55,8 @@ public final class RunnerScreen extends TateGameScreen {
 		this.backgroundRender = new BackgroundRender(0, TateRunnerGame.WIDTH);
 
 		// Create all the buttons for this screen
-		this.addButton(new CosmeticShopButton(tateRunner, 20, 20));
+		this.addButton(new ExitButton(20, 20, button ->
+				this.tateRunner.getManager(ScreenManager.class).showScreen(SplashScreen.class)));
 
 		// Restart the game
 		this.restart();
@@ -82,14 +83,14 @@ public final class RunnerScreen extends TateGameScreen {
 			// Only run game progression things when current state is set to running
 			case RUNNING -> {
 				if (!isHurt && this.player.collidesWith(this.rock)) {
-					if (this.player.getLives() == 1) {
-						this.stateManager.setCurrentState(State.DIED);
-					} else {
-						this.player.setLives(this.player.getLives() - 1);
-					}
+					if (this.player.getLives() == 1) this.stateManager.setCurrentState(State.DIED);
+					else this.player.setLives(this.player.getLives() - 1);
+
 					this.isHurt = true;
 					return;
 				}
+
+				// Make sure they don't get hurt again if they already are hurt (hitting a rock)
 				this.isHurt = this.player.collidesWith(this.rock);
 
 				// Update the rock
@@ -107,6 +108,8 @@ public final class RunnerScreen extends TateGameScreen {
 				// Up the distance walked
 				if (Game.time().now() % (int) (80 * (1 + (this.gameSpeed / 100.0))) == 0) {
 					this.distanceWalked++;
+
+					if (this.distanceWalked > this.profile.getHighScore()) this.highScore = true;
 				}
 
 				// Up the gameSpeed and playerAnimationSpeed
@@ -117,31 +120,46 @@ public final class RunnerScreen extends TateGameScreen {
 			}
 			case DIED -> {
 				// Draw a fullscreen rectangle on with an alpha
-				this.graphics.setColor(new Color(0, 0, 0, (int) (0.85 * 255)));
-				ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
+				this.drawFullscreenCover(new Color(0, 0, 0, TateColors.HIGH_BACKGROUND_ALPHA));
 
 				// Draw the game paused text on the screen
-				this.drawCenteredText(0, 5, this.gameFont, new Color(96, 0, 0), 125f, "YOU DIED!");
-				this.drawCenteredText(this.gameFont, Color.RED, 125f, "YOU DIED!");
-				this.drawCenteredAnimatedText(0, 50, 550, this.gameTextFont, new Color(213, 213, 213), 25f,
+				this.drawCenteredText(0, 5, this.gameFont, new Color(96, 0, 0), 160f, "YOU DIED!");
+				this.drawCenteredText(this.gameFont, Color.RED, 160f, "YOU DIED!");
+				this.drawCenteredAnimatedText(0, 35, 550, this.gameTextFont, new Color(213, 213, 213), 30f,
 						"Press > SPACE < to start over",
 						"Press > SPACE < to start over",
 						"Press  >SPACE<  to start over");
+
+				// Save the current score
+				this.profile.setLastScore(this.distanceWalked);
+
+				// Render the game summary, score and current high score
+				if (this.highScore) {
+					this.profile.setHighScore(this.distanceWalked);
+					this.drawCenteredText(0, -280, this.gameTextFont, new Color(252, 179, 14),
+							80f, "! A new High Score !");
+				}
+
+				this.drawCenteredText(0, -200, this.gameTextFont, new Color(213, 213, 213),
+							80f, this.distanceWalked + "M");
+
+
+				// Render desired buttons
+				this.renderButton(ExitButton.class);
 			}
 			case PAUSED -> {
 				// Draw a fullscreen rectangle on with an alpha
-				this.graphics.setColor(new Color(0, 0, 0, (int) (0.85 * 255)));
-				ShapeRenderer.render(this.graphics, new Rectangle(1920, 1080), 0, 0);
+				this.drawFullscreenCover(new Color(0, 0, 0, TateColors.HIGH_BACKGROUND_ALPHA));
 
 				// Draw the game paused text on the screen
-				this.drawCenteredText(0, 5, this.gameFont, new Color(2, 96, 96), 125f, "GAME PAUSED");
-				this.drawCenteredText(this.gameFont, Color.CYAN, 125f, "GAME PAUSED");
-				this.drawCenteredAnimatedText(0, 50, 550, this.gameTextFont, new Color(213, 213, 213), 25f,
+				this.drawCenteredText(0, 5, this.gameFont, new Color(2, 96, 96), 160f, "GAME PAUSED");
+				this.drawCenteredText(this.gameFont, Color.CYAN, 160f, "GAME PAUSED");
+				this.drawCenteredAnimatedText(0, 35, 550, this.gameTextFont, new Color(213, 213, 213), 30f,
 						"Press > ESC < to resume the game",
 						"Press > ESC < to resume the game",
 						"Press  >ESC<  to resume the game");
 
-				// Set the pause menu buttons to visible
+				// Render all the buttons
 				this.renderAllButtons();
 			}
 		}
@@ -226,7 +244,7 @@ public final class RunnerScreen extends TateGameScreen {
 			case 1 -> TateImages.HEART_1LEFT.toImage(186, 40);
 			default -> null;
 		};
-		this.drawStaticImage(20, 135, heartsImage);
+		this.drawStaticImage(20, 165 * TateRunnerGame.IMAGE_SCALE, heartsImage);
 	}
 
 	private void restart() {

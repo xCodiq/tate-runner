@@ -33,7 +33,7 @@ public final class SplashScreen extends TateGameScreen {
 		this.subtitleFont = TateFonts.SECONDARY_SUBTITLE.toFont();
 
 		// Create all the buttons for this screen
-		this.addButton(new ExitButton(20, 20));
+		this.addButton(new ExitButton(20, 20, button -> System.exit(0)));
 		this.addButton(new OptionsButton(198, 20));
 		this.addButton(new CosmeticShopButton(tateRunner, 376, 20));
 
