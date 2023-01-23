@@ -83,8 +83,10 @@ public final class RunnerScreen extends TateGameScreen {
 			// Only run game progression things when current state is set to running
 			case RUNNING -> {
 				if (!isHurt && this.player.collidesWith(this.rock)) {
-					if (this.player.getLives() == 1) this.stateManager.setCurrentState(State.DIED);
-					else this.player.setLives(this.player.getLives() - 1);
+					if (this.player.getLives() == 1) {
+						if (this.distanceWalked > this.profile.getHighScore()) this.highScore = true;
+						this.stateManager.setCurrentState(State.DIED);
+					} else this.player.setLives(this.player.getLives() - 1);
 
 					this.isHurt = true;
 					return;
@@ -108,8 +110,6 @@ public final class RunnerScreen extends TateGameScreen {
 				// Up the distance walked
 				if (Game.time().now() % (int) (80 * (1 + (this.gameSpeed / 100.0))) == 0) {
 					this.distanceWalked++;
-
-					if (this.distanceWalked > this.profile.getHighScore()) this.highScore = true;
 				}
 
 				// Up the gameSpeed and playerAnimationSpeed
