@@ -22,7 +22,7 @@ public final class ImageUtil {
 	}
 
 	public static BufferedImage loadImage(String image, int width, int height) {
-		return Imaging.scale(loadImage(image), width, height);
+		return Imaging.scale(loadImage(image), width, height,true);
 	}
 }
 

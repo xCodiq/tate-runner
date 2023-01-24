@@ -13,11 +13,16 @@ import de.gurkenlabs.litiengine.resources.Resources;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class TateRunnerGame implements IGame {
+	private static final String THREAD_NAME = "TATE-THREAD-%d";
+	private static final AtomicInteger THREAD_COUNTER = new AtomicInteger(0);
 
-	public static float IMAGE_SCALE = 1f;
+	public static float IMAGE_SCALE;
 	public static int GAME_WIDTH, GAME_HEIGHT, WIDTH, HEIGHT;
 	public static double GRAVITY;
 
@@ -34,7 +39,7 @@ public class TateRunnerGame implements IGame {
 		IMAGE_SCALE = WIDTH / (float) GAME_WIDTH;
 
 		GRAVITY = 2.3;
-		DEBUG_MODE = false; // set to true to enable debug mode
+		DEBUG_MODE = true; // set to true to enable debug mode
 		INSTANCE = null;
 	}
 
@@ -48,6 +53,11 @@ public class TateRunnerGame implements IGame {
 	public static TateRunnerGame getInstance() {
 		if (INSTANCE == null) throw new IllegalStateException("Cannot access instance; instance might be null");
 		return INSTANCE;
+	}
+
+	public static ScheduledExecutorService getThreadPoolExecutor() {
+		return Executors.newScheduledThreadPool(0, r ->
+				new Thread(r, String.format(THREAD_NAME, THREAD_COUNTER.getAndIncrement())));
 	}
 
 	@Override

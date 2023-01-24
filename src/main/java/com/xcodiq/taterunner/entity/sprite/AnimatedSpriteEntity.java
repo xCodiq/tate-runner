@@ -31,7 +31,7 @@ public class AnimatedSpriteEntity extends Entity {
 		}
 
 		// Check if the animation should be paused
-		if (this.pauseAnimationCondition != null && !this.pauseAnimationCondition.get()) {
+		if (this.pauseAnimationCondition != null && this.pauseAnimationCondition.get()) {
 			tateGameScreen.drawStaticImage(this.x, this.y, this.lastSpriteAnimationFrame);
 			return;
 		}

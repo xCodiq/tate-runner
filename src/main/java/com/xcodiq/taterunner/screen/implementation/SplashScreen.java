@@ -4,16 +4,16 @@ import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.asset.color.TateColors;
 import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.asset.image.TateImages;
+import com.xcodiq.taterunner.entity.implementation.Coin;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.background.GameBackgrounds;
+import com.xcodiq.taterunner.asset.scene.TateScenes;
 import com.xcodiq.taterunner.screen.button.implementation.ExitButton;
 import com.xcodiq.taterunner.screen.button.implementation.OptionsButton;
 import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticShopButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.animation.ImageAnimation;
 import de.gurkenlabs.litiengine.Game;
-import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -34,11 +34,11 @@ public final class SplashScreen extends TateGameScreen {
 		this.subtitleFont = TateFonts.SECONDARY_SUBTITLE.toFont();
 
 		// Create all the buttons for this screen
-		this.addButton(new ExitButton(20, 20));
-		this.addButton(new OptionsButton(20 + 138 + 45, 20));
-		this.addButton(new CosmeticShopButton(tateRunner, 20 + 138 + 45 + 138 + 45, 20));
+		this.addButton(new ExitButton(20, 20, button -> System.exit(0)));
+//		this.addButton(new OptionsButton(198, 20));
+		this.addButton(new CosmeticShopButton(tateRunner, /*376*/198, 20));
 
-		// Initialize the player
+		// Initialize a new animation for the kakashi image that randomly appears on the screen
 		this.kakashiAnimation = new ImageAnimation("kakashi", 24, 100, kakashiHeight, kakashiHeight);
 	}
 
@@ -85,7 +85,7 @@ public final class SplashScreen extends TateGameScreen {
 		if (!this.showKakashi) return;
 
 		this.kakashiX += 12;
-		this.drawImage(this.kakashiX, GameBackgrounds.DARK_FOREST.getFloorCoordinate(),
+		this.drawImage(this.kakashiX, TateScenes.DARK_FOREST.getFloorCoordinate(),
 				this.kakashiAnimation.getCurrentFrame());
 
 		if (this.kakashiX > TateRunnerGame.GAME_WIDTH + this.kakashiHeight) {

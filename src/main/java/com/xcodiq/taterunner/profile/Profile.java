@@ -1,15 +1,28 @@
 package com.xcodiq.taterunner.profile;
 
-import com.xcodiq.taterunner.screen.background.GameBackgrounds;
+import com.xcodiq.taterunner.asset.scene.TateScene;
+import com.xcodiq.taterunner.asset.scene.TateScenes;
+import com.xcodiq.taterunner.asset.sprite.TateSprites;
 
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Profile {
 
 	private final String name;
-	private GameBackgrounds currentGameBackground = GameBackgrounds.DARK_FOREST;
+	private final Set<TateSprites> unlockedTateSprites = new HashSet<>() {{
+		this.add(TateSprites.KAKASHI);
+	}};
+	private final Set<TateScenes> unlockedTateScenes = new HashSet<>() {{
+		this.add(TateScenes.DARK_FOREST);
+	}};
+
+	private TateScenes currentTateScene = TateScenes.DARK_FOREST;
+	private TateSprites equippedTateSprite = TateSprites.KAKASHI;
 
 	private int coins = 0;
+	private int lastScore = 0, highScore = 0;
 
 	public Profile(String name) {
 		this.name = name;
@@ -19,16 +32,40 @@ public class Profile {
 		return name;
 	}
 
-	public GameBackgrounds getCurrentGameBackground() {
-		return currentGameBackground;
+	public TateScene getCurrentTateScene() {
+		return currentTateScene;
 	}
 
-	public void setCurrentGameBackground(GameBackgrounds currentGameBackground) {
-		this.currentGameBackground = currentGameBackground;
+	public void setCurrentTateScene(TateScenes currentTateScene) {
+		this.currentTateScene = currentTateScene;
 	}
 
-	public BufferedImage getCurrentGameBackgroundImage() {
-		return this.currentGameBackground.getBackgroundImage().toImage();
+	public BufferedImage getCurrentSceneImage() {
+		return this.currentTateScene.toImage();
+	}
+
+	public TateSprites getEquippedTateSprite() {
+		return equippedTateSprite;
+	}
+
+	public void setEquippedTateSprite(TateSprites equippedTateSprite) {
+		this.equippedTateSprite = equippedTateSprite;
+	}
+
+	public Set<TateSprites> getUnlockedTateSprites() {
+		return unlockedTateSprites;
+	}
+
+	public Set<TateScenes> getUnlockedTateScenes() {
+		return unlockedTateScenes;
+	}
+
+	public boolean ownsTateSprite(TateSprites tateSprite) {
+		return this.equippedTateSprite == tateSprite || this.unlockedTateSprites.contains(tateSprite);
+	}
+
+	public boolean ownsTateScene(TateScenes tateScene) {
+		return this.currentTateScene == tateScene || this.unlockedTateScenes.contains(tateScene);
 	}
 
 	public int getCoins() {
@@ -49,5 +86,21 @@ public class Profile {
 
 	public boolean hasCoins(int coins) {
 		return this.coins >= coins;
+	}
+
+	public int getLastScore() {
+		return lastScore;
+	}
+
+	public void setLastScore(int lastScore) {
+		this.lastScore = lastScore;
+	}
+
+	public int getHighScore() {
+		return highScore;
+	}
+
+	public void setHighScore(int highScore) {
+		this.highScore = highScore;
 	}
 }

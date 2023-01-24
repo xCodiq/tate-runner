@@ -25,7 +25,7 @@ public final class KeystrokeManager extends Manager {
 				if (keystrokeMethod == null || !screenManager.getCurrentScreen().equals(tateGameScreen)) continue;
 
 				try {
-					if (System.currentTimeMillis() - this.lastKeystrokeInvoke > 100) { //before=175
+					if (System.currentTimeMillis() - this.lastKeystrokeInvoke > 175) { //before=175
 						// Invoke the keystroke method
 						keystrokeMethod.setAccessible(true);
 						keystrokeMethod.invoke(tateGameScreen, keyEvent);

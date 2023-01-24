@@ -4,6 +4,7 @@ import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.entity.bound.BoundingBox;
 import com.xcodiq.taterunner.entity.bound.annotation.BoundContext;
 import com.xcodiq.taterunner.entity.bound.point.BoundingPoint;
+import com.xcodiq.taterunner.entity.bound.type.BoundType;
 import com.xcodiq.taterunner.entity.bound.type.CircleBoundingBox;
 import com.xcodiq.taterunner.entity.bound.type.PolygonBoundingBox;
 import com.xcodiq.taterunner.entity.bound.type.RectangleBoundingBox;
@@ -21,13 +22,13 @@ import java.util.List;
 public abstract class Entity {
 	private static final int BOUNDING_BOX_MARGIN = 20;
 
-	protected final BoundingBox<?> boundingBox;
-
 	protected final double startingX, startingY;
 	protected final int width, height;
 
 	protected final BoundContext boundContext;
 	protected double x, y;
+
+	protected BoundingBox<?> boundingBox;
 
 	public Entity(double startingX, double startingY, int width, int height) {
 		// Set the entity width and height
@@ -47,7 +48,14 @@ public abstract class Entity {
 		if (this.boundContext == null) throw new RuntimeException("BoundContext annotation not found on class!");
 
 		// Determine the bounding box type
-		this.boundingBox = switch (this.boundContext.boundType()) {
+		this.updateBoundContext(this.boundContext.boundType(), this.boundContext.boundPath());
+
+		// Update the bounding box for the first time to position it correctly
+		this.updateBoundingBox();
+	}
+
+	protected void updateBoundContext(BoundType boundType, String boundPath) {
+		this.boundingBox = switch (boundType) {
 			case BOX ->
 				// Create a rectangle bounding box
 					new RectangleBoundingBox(width - BOUNDING_BOX_MARGIN, height - BOUNDING_BOX_MARGIN);
@@ -56,7 +64,6 @@ public abstract class Entity {
 					new CircleBoundingBox(width - BOUNDING_BOX_MARGIN, height - BOUNDING_BOX_MARGIN);
 			case POLYGON -> {
 				// Look for a bound file path
-				final String boundPath = this.boundContext.boundPath();
 				if (boundPath.isEmpty()) throw new RuntimeException("Bound path not in BoundContext annotation!");
 
 				try {
@@ -81,9 +88,6 @@ public abstract class Entity {
 				}
 			}
 		};
-
-		// Update the bounding box for the first time to position it correctly
-		this.updateBoundingBox();
 	}
 
 	public BoundingBox<?> getBoundingBox() {

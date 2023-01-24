@@ -3,10 +3,11 @@ package com.xcodiq.taterunner.manager.implementation;
 import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.manager.Manager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.screen.button.Button;
+import com.xcodiq.taterunner.screen.button.model.Button;
 import de.gurkenlabs.litiengine.input.Input;
 
 import java.awt.*;
+import java.util.stream.Collectors;
 
 public final class MouseManager extends Manager {
 
@@ -24,6 +25,8 @@ public final class MouseManager extends Manager {
 				if (currentScreen == null || !screenManager.getCurrentScreen().equals(tateGameScreen)) continue;
 
 				for (Button button : tateGameScreen.getButtons()) {
+					if (!currentScreen.getCurrentRenderedButtons().contains(button.getClass())) continue;
+
 					button.setFocused(button.getRectangle().contains(moveEvent.getPoint()));
 				}
 			}
@@ -36,8 +39,11 @@ public final class MouseManager extends Manager {
 
 				for (Button button : tateGameScreen.getButtons()) {
 					final Point point = clickEvent.getPoint();
-					if (button.getRectangle().contains(point)) {
-						button.getClickConsumer().accept(clickEvent);
+					if (!currentScreen.getCurrentRenderedButtons().contains(button.getClass())) continue;
+					if (button.getRectangle().contains(point) && button.canClick()) {
+						final Runnable clickAction = button.getClickAction();
+
+						if (clickAction != null) clickAction.run();
 						return;
 					}
 				}
