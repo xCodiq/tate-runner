@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public final class ScreenManager extends Manager {
 
 	private final Map<Class<? extends TateGameScreen>, TateGameScreen> registeredScreens = new HashMap<>();
-	private TateGameScreen currentScreen;
+	private TateGameScreen currentScreen, previousScreen;
 
 	public ScreenManager(TateRunnerGame tateRunnerGame) {
 		super(tateRunnerGame);
@@ -56,6 +56,9 @@ public final class ScreenManager extends Manager {
 		Game.screens().display(gameScreen.getName());
 		gameScreen.preShow();
 
+		// Save the previous screen into the variable
+		this.previousScreen = this.currentScreen;
+
 		// Set the game screen as the current screen
 		this.currentScreen = gameScreen;
 		Logger.debug("[ScreenManager] Showing screen: " + gameScreen.getName());
@@ -72,5 +75,13 @@ public final class ScreenManager extends Manager {
 	public <T extends TateGameScreen> void setCurrentScreen(Class<T> screenClass) {
 		this.currentScreen = Objects.requireNonNull(this.registeredScreens.get(screenClass),
 				"TateGameScreen doesn't exist!");
+	}
+
+	public TateGameScreen getPreviousScreen() {
+		return previousScreen;
+	}
+
+	public <T extends TateGameScreen> boolean isPreviousScreen(Class<T> screenClass) {
+		return this.previousScreen != null && this.previousScreen.getClass().equals(screenClass);
 	}
 }

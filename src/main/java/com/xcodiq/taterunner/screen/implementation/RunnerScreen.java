@@ -5,6 +5,7 @@ import com.xcodiq.taterunner.asset.color.TateColors;
 import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.asset.image.TateImages;
 import com.xcodiq.taterunner.asset.scene.TateScene;
+import com.xcodiq.taterunner.asset.sound.TateSounds;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
 import com.xcodiq.taterunner.manager.implementation.ProfileManager;
@@ -226,7 +227,7 @@ public final class RunnerScreen extends TateGameScreen {
 				new Color(44, 41, 41, TateColors.LOW_BACKGROUND_ALPHA));
 
 		// Draw the title of the scoreboard
-		this.drawText(112 - 30, 43, Color.CYAN, 30f, "TATE RUNNER");
+		this.drawText(82, 43, Color.CYAN, 30f, "TATE RUNNER");
 
 		// Draw the coins indicator
 		this.drawText(25, 80, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.orange, 23f,
@@ -266,6 +267,9 @@ public final class RunnerScreen extends TateGameScreen {
 		this.backgroundRender.reset();
 		this.distanceWalked = 0;
 		this.gameSpeed = -6.00;
+
+		// Reset all sounds from previous screens
+		TateSounds.resetSounds();
 
 		// Set the state to running again
 		this.stateManager.setCurrentState(State.RUNNING);

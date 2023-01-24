@@ -7,6 +7,7 @@ import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.editor.ImageEditor;
 import com.xcodiq.taterunner.util.editor.TextEditor;
 import com.xcodiq.taterunner.util.text.TextUtil;
+import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.graphics.ImageRenderer;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.gui.screens.GameScreen;
@@ -16,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Predicate;
 
 public abstract class TateGameScreen extends GameScreen implements TextEditor, ImageEditor {
 
