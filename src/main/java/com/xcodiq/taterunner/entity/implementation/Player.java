@@ -6,7 +6,8 @@ import com.xcodiq.taterunner.entity.sprite.AnimatedSpriteEntity;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.util.animation.ImageAnimation;
 
-@BoundContext(boundType = BoundType.BOX)
+@BoundContext(boundType = BoundType.POLYGON,
+boundPath = "sprites/kakashi/kakashi.bounds")
 public final class Player extends AnimatedSpriteEntity {
 	private static final int STARTING_LIVES = 3;
 	private static final float JUMP_HEIGHT = 13f;
@@ -20,8 +21,8 @@ public final class Player extends AnimatedSpriteEntity {
 	private int lives = STARTING_LIVES;
 
 	public Player(double startingX, double startingY) {
-		super(new ImageAnimation("oliver", 8, 75, (int) (260/1.6),(int)( 223/1.6)), startingX, startingY);
-//		super(new ImageAnimation("kakashi", 24, 100, 200, 200), startingX, startingY);
+		//super(new ImageAnimation("oliver", 8, 75, (int) (260/1.6),(int)( 223/1.6)), startingX, startingY);
+		super(new ImageAnimation("kakashi", 24, 100, 200, 200), startingX, startingY);
 //		super(new ImageAnimation("amongus", 24, 20, 462/3, 730/3), startingX, startingY);
 	}
 

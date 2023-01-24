@@ -18,6 +18,7 @@ import com.xcodiq.taterunner.state.State;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -27,23 +28,22 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class RunnerScreen extends TateGameScreen {
+	public final Random random = new Random();
 
 	private final StateManager stateManager;
 	private final Profile profile;
-
 	private final Player player;
 	private final double floorYCoordinate;
 	private final BufferedImage backgroundImage;
 	private final BackgroundRender backgroundRender;
 	private final Font gameFont, gameTextFont;
 	private Rock rock;
+	public int startPosObstakel = 3840;
 
 	private Coins coins;
 	private Bat bat;
 	private int distanceWalked;
 	private double gameSpeed;
-
-	public final Random random = new Random();
 
 	public RunnerScreen(TateRunnerGame tateRunner) {
 		super(tateRunner, "Runner");
@@ -114,14 +114,8 @@ public final class RunnerScreen extends TateGameScreen {
 					return;
 				}
 
-				// Update the rock
-				this.updateRock();
-
-				//update the bat
-				this.updateBat();
-
-				//update coins
-				this.updateCoins();
+				// Update all obstakels
+				this.UpdateAllObstakels();
 
 				// Display the distance walked text
 				this.drawCenteredText(0, 400, this.gameFont, Color.ORANGE,
@@ -211,41 +205,99 @@ public final class RunnerScreen extends TateGameScreen {
 		// Determine the background render coordinates have passed the screen and need a reset
 		if (backgroundRender.getBackgroundX() <= -backgroundRender.getOriginalNextX()) {
 			backgroundRender.reset();
+
 		}
 
 		// Draw the actual background image
+
 		this.drawBackgroundImage(this.backgroundImage, backgroundRender.getBackgroundX());
 		this.drawBackgroundImage(this.backgroundImage, backgroundRender.getNextBackgroundX());
 	}
 
-	private void updateRock() {
+	private void UpdateAllObstakels() {
+
+		Integer[] randomPos = new Integer[5];
+
 		this.rock.update(this.gameSpeed);
+		this.bat.update(this.gameSpeed);
+		this.coins.update(this.gameSpeed);
+		int distanceRock = 0;
+		int distanceBat = 0;
+		int distanceCoin = 0;
+		int posRock;
+		int posBat;
+		int posCoin;
+
+		randomPos[0] = 0;
+		randomPos[1] = 0;
+
+		int simpleCounter = 2;
+		int anotherSimpleCounter = 1;
+		while (anotherSimpleCounter<=3) {
+			randomPos[simpleCounter] = random.nextInt(1,4);
+
+			while (randomPos[simpleCounter] == randomPos[simpleCounter-1] || randomPos[simpleCounter] == randomPos[simpleCounter-2]) {
+				randomPos[simpleCounter] = random.nextInt(1,4);
+			}
+			anotherSimpleCounter++;
+			simpleCounter++;
+
+		}
+
+		posRock = randomPos[2];
+		posBat = randomPos[3];
+		posCoin = randomPos[4];
+
+
+
+		//when updated set int startposobstakels 1920 *timesupdated + pos
+		startPosObstakel += 1920;
+
+
+
+		if (posRock ==1) {
+			distanceRock = startPosObstakel+random.nextInt(300, 600);
+		}else if(posRock ==2) {
+			distanceRock =  startPosObstakel+random.nextInt(900, 1200);
+		} else if (posRock==3) {
+			distanceRock = startPosObstakel+random.nextInt(1500, 1800);
+		}
+
+		if (posBat ==1) {
+			distanceBat = startPosObstakel + random.nextInt(300, 600);
+		}else if(posBat ==2) {
+			distanceBat = startPosObstakel + random.nextInt(900, 1200);
+		} else if (posBat==3) {
+			distanceBat = startPosObstakel + random.nextInt(1500, 1800);
+		}
+
+		if (posCoin ==1) {
+			distanceCoin = startPosObstakel + random.nextInt(300, 600);
+		}else if(posCoin ==2) {
+			distanceCoin = startPosObstakel + random.nextInt(900, 1200);
+		} else if (posCoin==3) {
+			distanceCoin = startPosObstakel + random.nextInt(1500, 1800);
+		}
 
 		if (this.rock.getX() < -this.rock.getWidth()) {
 			final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
-			this.rock = new Rock(TateRunnerGame.GAME_WIDTH , this.floorYCoordinate,
+			this.rock = new Rock( TateRunnerGame.GAME_WIDTH+ distanceRock  , this.floorYCoordinate,
 					randomSize, randomSize);
 		}
-	}
-
-	private void updateBat() {
-		this.bat.update(this.gameSpeed);
 
 		if (this.bat.getX() < -this.bat.getWidth()) {
 			final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
-			this.bat = new Bat(TateRunnerGame.GAME_WIDTH , this.floorYCoordinate -250,
+			this.bat = new Bat(TateRunnerGame.GAME_WIDTH+distanceBat, this.floorYCoordinate -250,
 					randomSize, randomSize);
 		}
-	}
-
-	private void updateCoins() {
-		this.coins.update(this.gameSpeed);
 
 		if (this.coins.getX() < -this.coins.getWidth()) {
 			final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
-			this.coins = new Coins(TateRunnerGame.GAME_WIDTH , this.floorYCoordinate,
+			this.coins = new Coins(TateRunnerGame.GAME_WIDTH+distanceCoin, this.floorYCoordinate,
 					randomSize, randomSize);
 		}
+
+
 	}
 
 	private void restart() {
@@ -253,6 +305,7 @@ public final class RunnerScreen extends TateGameScreen {
 		// Reset the entities
 		this.player.reset();
 		final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+
 
 		this.rock = new Rock(TateRunnerGame.GAME_WIDTH + 500, this.floorYCoordinate, randomSize, randomSize);
 		this.bat = new Bat(TateRunnerGame.GAME_WIDTH +1000,this.floorYCoordinate -250, randomSize, randomSize);

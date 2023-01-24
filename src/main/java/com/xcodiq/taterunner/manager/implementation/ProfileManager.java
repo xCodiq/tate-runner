@@ -12,7 +12,7 @@ import java.net.UnknownHostException;
 
 public final class ProfileManager extends Manager {
 	private static final String STORAGE_PATH = "/profiles/",
-			DEV_PATH = "C:\\Users\\elmar\\Documents\\Saxion\\TateRunner";
+			DEV_PATH = "C:\\Users\\ninop\\OneDrive - Saxion\\ItsInTheGame\\tate-runner";
 	private static final File STORAGE_FOLDER;
 
 	static {
