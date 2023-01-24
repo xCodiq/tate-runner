@@ -12,7 +12,7 @@ public enum TateScenes implements TateScene {
 
 	DARK_FOREST(TateImages.DARK_FOREST_BACKGROUND, 777, 100),
 	LIGHT_FOREST(TateImages.LIGHT_FOREST_BACKGROUND, 877, 500),
-	GRAVEYARD(TateImages.GRAVEYARD_BACKGROUND, 0, 1000);
+	GRAVEYARD(TateImages.GRAVEYARD_BACKGROUND, 904, 1000);
 
 	private final TateImage backgroundImage;
 	private final int floorCoordinate;

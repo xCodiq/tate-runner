@@ -4,12 +4,11 @@ import com.xcodiq.taterunner.TateRunnerGame;
 import com.xcodiq.taterunner.asset.color.TateColors;
 import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.asset.image.TateImages;
-import com.xcodiq.taterunner.entity.implementation.Coin;
+import com.xcodiq.taterunner.asset.scene.TateScenes;
+import com.xcodiq.taterunner.asset.sound.TateSounds;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
-import com.xcodiq.taterunner.asset.scene.TateScenes;
 import com.xcodiq.taterunner.screen.button.implementation.ExitButton;
-import com.xcodiq.taterunner.screen.button.implementation.OptionsButton;
 import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticShopButton;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.animation.ImageAnimation;
@@ -35,8 +34,7 @@ public final class SplashScreen extends TateGameScreen {
 
 		// Create all the buttons for this screen
 		this.addButton(new ExitButton(20, 20, button -> System.exit(0)));
-//		this.addButton(new OptionsButton(198, 20));
-		this.addButton(new CosmeticShopButton(tateRunner, /*376*/198, 20));
+		this.addButton(new CosmeticShopButton(tateRunner, 198, 20));
 
 		// Initialize a new animation for the kakashi image that randomly appears on the screen
 		this.kakashiAnimation = new ImageAnimation("kakashi", 24, 100, kakashiHeight, kakashiHeight);
@@ -44,6 +42,9 @@ public final class SplashScreen extends TateGameScreen {
 
 	@Override
 	public void render() {
+		// Play the main theme, looped
+		TateSounds.MAIN_THEME.playOnBackground();
+
 		// Set background test
 		this.drawBackgroundImage(TateImages.DARK_FOREST_BACKGROUND.toImage());
 
@@ -66,6 +67,14 @@ public final class SplashScreen extends TateGameScreen {
 
 		// Render all the buttons
 		this.renderAllButtons();
+	}
+
+	@Override
+	public void preShow() {
+		TateSounds.resetSounds(condition -> {
+			final ScreenManager screenManager = this.tateRunner.getManager(ScreenManager.class);
+			return !screenManager.isPreviousScreen(CosmeticShopScreen.class);
+		});
 	}
 
 	@Keystroke
