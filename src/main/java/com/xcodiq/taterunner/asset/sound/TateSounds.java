@@ -9,7 +9,14 @@ import java.util.function.Predicate;
 public enum TateSounds implements TateSound {
 
 	MAIN_THEME("audio/main_theme.ogg"),
-	BUTTON_CLICK("audio/button_click.wav");
+	JUMP("audio/jump.wav"),
+	PLAYER_HURT("audio/player_hurt.wav"),
+	PICKUP_COIN("audio/pickup_coin.wav"),
+	BUTTON_CLICK("audio/button_click.wav"),
+	EQUIP_ITEM("audio/equip_item.wav"),
+	PURCHASE_ITEM("audio/purchase_item.wav"),
+	INSUFFICIENT_FUNDS("audio/insufficient_funds.wav"),
+	;
 
 	private final String path;
 	private transient Sound sound;
@@ -50,6 +57,6 @@ public enum TateSounds implements TateSound {
 
 	@Override
 	public void play(boolean looped) {
-		Game.audio().playSound(this.getSound(), looped);
+		Game.audio().playSound(this.getSound(), looped, Game.audio().getMaxDistance(), 1.8F);
 	}
 }

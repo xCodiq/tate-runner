@@ -5,6 +5,7 @@ import com.xcodiq.taterunner.asset.color.TateColors;
 import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.asset.image.TateImages;
 import com.xcodiq.taterunner.asset.scene.TateScenes;
+import com.xcodiq.taterunner.asset.sound.TateSounds;
 import com.xcodiq.taterunner.asset.sprite.TateSpriteRender;
 import com.xcodiq.taterunner.asset.sprite.TateSprites;
 import com.xcodiq.taterunner.manager.implementation.ProfileManager;
@@ -17,7 +18,6 @@ import com.xcodiq.taterunner.screen.button.implementation.cosmetic.CosmeticSprit
 import com.xcodiq.taterunner.screen.button.implementation.cosmetic.item.CosmeticShopSceneItemButton;
 import com.xcodiq.taterunner.screen.button.implementation.cosmetic.item.CosmeticShopSpriteItemButton;
 import com.xcodiq.taterunner.screen.button.implementation.cosmetic.item.ShopItemButtonState;
-import com.xcodiq.taterunner.screen.button.model.ButtonState;
 import com.xcodiq.taterunner.screen.keystroke.Keystroke;
 import com.xcodiq.taterunner.util.collection.ExpiringList;
 import com.xcodiq.taterunner.util.text.ScreenText;
@@ -38,10 +38,9 @@ public final class CosmeticShopScreen extends TateGameScreen {
 
 	private final int spriteMenuWidth = maxMenuWidth - (spritesAmount * itemWidth + (spritesAmount - 1) * itemSpacing);
 	private final int spriteStartingX = ((TateRunnerGame.GAME_WIDTH - maxMenuWidth) / 2) + (spriteMenuWidth / 2);
-	private final int spriteItemOffset = 12;
-
 	private final int sceneMenuWidth = maxMenuWidth - (scenesAmount * itemWidth + (scenesAmount - 1) * itemSpacing);
 	private final int sceneStartingX = ((TateRunnerGame.GAME_WIDTH - maxMenuWidth) / 2) + (sceneMenuWidth / 2);
+	private final int spriteItemOffset = 12;
 	private final int sceneItemOffset = 28;
 
 	private ShopState shopState = ShopState.MAIN_MENU;
@@ -62,15 +61,24 @@ public final class CosmeticShopScreen extends TateGameScreen {
 					// Switch the state back to main menu state
 						this.shopState = ShopState.MAIN_MENU;
 			}
+
+			// Play the button click sound
+			TateSounds.BUTTON_CLICK.play();
 		}));
 
 		// Add the shop buttons
 		this.addButton(new CosmeticSpritesButton(496, 380,
-				button -> this.shopState = ShopState.SPRITES_MENU,
+				button -> {
+					this.shopState = ShopState.SPRITES_MENU;
+					TateSounds.BUTTON_CLICK.play();
+				},
 				clickCondition -> this.shopState == ShopState.MAIN_MENU));
 
 		this.addButton(new CosmeticScenesButton(1120, 380,
-				button -> this.shopState = ShopState.SCENES_MENU,
+				button -> {
+					this.shopState = ShopState.SCENES_MENU;
+					TateSounds.BUTTON_CLICK.play();
+				},
 				clickCondition -> this.shopState == ShopState.MAIN_MENU));
 
 		// Prepare the sprite item buttons by looping through the sprites
@@ -94,12 +102,14 @@ public final class CosmeticShopScreen extends TateGameScreen {
 
 					final String text = "! Equipped " + sprite + " !";
 					this.addScreenText(Color.CYAN, text);
+					TateSounds.EQUIP_ITEM.play();
 				} else if (button.isCurrentState(ShopItemButtonState.PURCHASE)) {
 					if (!this.profile.hasCoins(sprite.getPrice())) {
 						final String text = "! Insufficient funds, you need "
 											+ (sprite.getPrice() - this.profile.getCoins())
 											+ " more coins !";
 						this.addScreenText(Color.RED, text);
+						TateSounds.INSUFFICIENT_FUNDS.play();
 						return;
 					}
 
@@ -110,6 +120,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 
 					final String text = "! Added " + sprite + " to your sprite collection !";
 					this.addScreenText(Color.GREEN, text);
+					TateSounds.PURCHASE_ITEM.play();
 				}
 			});
 
@@ -138,12 +149,14 @@ public final class CosmeticShopScreen extends TateGameScreen {
 
 					final String text = "! Equipped the " + scene + " scene !";
 					this.addScreenText(Color.CYAN, text);
+					TateSounds.EQUIP_ITEM.play();
 				} else if (button.isCurrentState(ShopItemButtonState.PURCHASE)) {
 					if (!this.profile.hasCoins(scene.getPrice())) {
 						final String text = "! Insufficient funds, you need "
 											+ (scene.getPrice() - this.profile.getCoins())
 											+ " more coins !";
 						this.addScreenText(Color.RED, text);
+						TateSounds.INSUFFICIENT_FUNDS.play();
 						return;
 					}
 
@@ -154,6 +167,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 
 					final String text = "! Added the " + scene + " to your scene collection !";
 					this.addScreenText(Color.GREEN, text);
+					TateSounds.PURCHASE_ITEM.play();
 				}
 			});
 

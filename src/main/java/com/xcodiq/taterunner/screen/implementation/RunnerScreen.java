@@ -8,6 +8,7 @@ import com.xcodiq.taterunner.asset.scene.TateScene;
 import com.xcodiq.taterunner.asset.sound.TateSounds;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
+import com.xcodiq.taterunner.manager.implementation.EnemyManager;
 import com.xcodiq.taterunner.manager.implementation.ProfileManager;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.manager.implementation.StateManager;
@@ -26,6 +27,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class RunnerScreen extends TateGameScreen {
 
+	private final EnemyManager enemyManager;
 	private final StateManager stateManager;
 	private final Profile profile;
 
@@ -45,6 +47,8 @@ public final class RunnerScreen extends TateGameScreen {
 
 	public RunnerScreen(TateRunnerGame tateRunner) {
 		super(tateRunner, "Runner");
+
+		this.enemyManager = tateRunner.getManager(EnemyManager.class);
 		this.stateManager = tateRunner.getManager(StateManager.class);
 		this.profile = tateRunner.getManager(ProfileManager.class).getProfile();
 
@@ -73,8 +77,11 @@ public final class RunnerScreen extends TateGameScreen {
 		// Render the background
 		this.renderBackground();
 
+		// Use the enemy manager to render all the enemies on the screen
+		this.enemyManager.renderAll(this);
+
 		// Render the rock
-		this.rock.render(this);
+//		this.rock.render(this);
 
 		// Render the player
 		this.player.render(this);
@@ -83,21 +90,33 @@ public final class RunnerScreen extends TateGameScreen {
 		switch (currentState) {
 			// Only run game progression things when current state is set to running
 			case RUNNING -> {
-				if (!isHurt && this.player.collidesWith(this.rock)) {
+				if (this.enemyManager.isColliding(this.player)) {
+					// Play the hurt sound
+					TateSounds.PLAYER_HURT.play();
+
+					// Check if they have lives left, if not, set the state to died
 					if (this.player.getLives() == 1) {
 						if (this.distanceWalked > this.profile.getHighScore()) this.highScore = true;
 						this.stateManager.setCurrentState(State.DIED);
 					} else this.player.setLives(this.player.getLives() - 1);
 
+					// Set state to hurt
 					this.isHurt = true;
 					return;
 				}
 
+//				if (!isHurt && this.player.collidesWith(this.rock)) {
+//
+//				}
+
 				// Make sure they don't get hurt again if they already are hurt (hitting a rock)
-				this.isHurt = this.player.collidesWith(this.rock);
+//				this.isHurt = this.player.collidesWith(this.rock);
+
+				// Update all the enemies
+				this.enemyManager.updateAll(this, this.player, this.gameSpeed);
 
 				// Update the rock
-				this.updateRock();
+//				this.updateRock();
 
 				// Attempt to change the player's position while jumping
 				this.player.jump();
@@ -142,7 +161,7 @@ public final class RunnerScreen extends TateGameScreen {
 				}
 
 				this.drawCenteredText(0, -200, this.gameTextFont, new Color(213, 213, 213),
-							80f, this.distanceWalked + "M");
+						80f, this.distanceWalked + "M");
 
 
 				// Render desired buttons
@@ -177,7 +196,10 @@ public final class RunnerScreen extends TateGameScreen {
 				}
 
 				if (currentState == State.RUNNING && keyEvent.getKeyCode() == KeyEvent.VK_SPACE) {
-					if (!this.player.isJumping()) this.player.setJumping(true);
+					if (!this.player.isJumping()) {
+						this.player.setJumping(true);
+						TateSounds.JUMP.play();
+					}
 				}
 
 				if (currentState == State.RUNNING && keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -267,6 +289,7 @@ public final class RunnerScreen extends TateGameScreen {
 		this.backgroundRender.reset();
 		this.distanceWalked = 0;
 		this.gameSpeed = -6.00;
+		this.highScore = false;
 
 		// Reset all sounds from previous screens
 		TateSounds.resetSounds();

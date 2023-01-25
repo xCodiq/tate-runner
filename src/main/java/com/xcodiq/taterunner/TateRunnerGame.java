@@ -117,7 +117,8 @@ public class TateRunnerGame implements IGame {
 				new StateManager(this),
 				new ScreenManager(this),
 				new KeystrokeManager(this),
-				new MouseManager(this)
+				new MouseManager(this),
+				new EnemyManager(this)
 		).forEach(manager -> {
 			// Enable the manager
 			manager.enable();
