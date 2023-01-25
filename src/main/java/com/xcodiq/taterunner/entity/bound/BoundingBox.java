@@ -49,6 +49,6 @@ public abstract class BoundingBox<S extends Shape> {
 	}
 
 	public boolean overlaps(BoundingBox<?> boundingBox) {
-		return this.shape.intersects(boundingBox.getShape().getBounds2D());
+		return this.shape.intersects(boundingBox.getShape().getBounds());
 	}
 }

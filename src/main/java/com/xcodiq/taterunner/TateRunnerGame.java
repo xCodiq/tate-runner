@@ -39,7 +39,7 @@ public class TateRunnerGame implements IGame {
 		IMAGE_SCALE = WIDTH / (float) GAME_WIDTH;
 
 		GRAVITY = 2.3;
-		DEBUG_MODE = true; // set to true to enable debug mode
+		DEBUG_MODE = false; // set to true to enable debug mode
 		INSTANCE = null;
 	}
 
@@ -114,11 +114,11 @@ public class TateRunnerGame implements IGame {
 		// Make a stream of all the managers to register
 		Stream.of(
 				new ProfileManager(this),
+				new EnemyManager(this),
 				new StateManager(this),
 				new ScreenManager(this),
-				new KeystrokeManager(this),
-				new MouseManager(this),
-				new EnemyManager(this)
+		new KeystrokeManager(this),
+		new MouseManager(this)
 		).forEach(manager -> {
 			// Enable the manager
 			manager.enable();

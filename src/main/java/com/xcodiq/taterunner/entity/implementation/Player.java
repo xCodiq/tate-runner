@@ -45,6 +45,8 @@ public final class Player extends AnimatedSpriteEntity {
 
 		this.jumpVelocity = INITIAL_JUMP_VELOCITY;
 		this.jumping = false;
+
+		this.getSpriteAnimation().resetInterval();
 	}
 
 	@Override

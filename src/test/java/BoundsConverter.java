@@ -3,29 +3,25 @@ import java.util.Arrays;
 public class BoundsConverter {
 
 	private final String bounds = """
-			156;92;
-			176;70;
-			212;63;
-			224;41;
-			249;42;
-			246;84;
-			226;83;
-			192;154;
-			190;219;
-			134;265;
-			124;247;
-			170;207;
-			174;183;
-			157;175;
-			177;135;
-			182;104;
+			65;2;
+			134;1;
+			176;23;
+			200;65;
+			200;136;
+			176;176;
+			139;198;
+			68;197;
+			26;176;
+			4;133;
+			2;66;
+			26;26;
 			""".trim();
 
 	public BoundsConverter() {
 		final String[] split = bounds.split(";");
 		System.out.println("split = " + Arrays.toString(split));
 
-		int width = 293, height = 279;
+		int width = 200, height = 200;
 
 		final double[][] doubles = new double[split.length/2][];
 

@@ -71,10 +71,6 @@ public final class SplashScreen extends TateGameScreen {
 
 	@Override
 	public void preShow() {
-		TateSounds.resetSounds(condition -> {
-			final ScreenManager screenManager = this.tateRunner.getManager(ScreenManager.class);
-			return !screenManager.isPreviousScreen(CosmeticShopScreen.class);
-		});
 	}
 
 	@Keystroke

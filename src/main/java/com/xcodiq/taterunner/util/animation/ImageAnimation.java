@@ -10,6 +10,7 @@ import java.util.List;
 
 public final class ImageAnimation {
 
+	private final double originalInterval;
 	private final List<BufferedImage> frames = new ArrayList<>();
 	private double interval;
 
@@ -17,6 +18,7 @@ public final class ImageAnimation {
 	private int currentFrame = 0;
 
 	public ImageAnimation(String name, int frameCount, double interval, int width, int height) {
+		this.originalInterval = interval;
 		this.interval = interval;
 
 		for (int i = 1; i <= frameCount; i++) {
@@ -54,5 +56,9 @@ public final class ImageAnimation {
 
 	public int getHeight() {
 		return this.getCurrentFrame().getHeight();
+	}
+
+	public void resetInterval() {
+		this.interval = this.originalInterval;
 	}
 }

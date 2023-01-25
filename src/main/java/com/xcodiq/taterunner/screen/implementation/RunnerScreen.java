@@ -6,6 +6,8 @@ import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.asset.image.TateImages;
 import com.xcodiq.taterunner.asset.scene.TateScene;
 import com.xcodiq.taterunner.asset.sound.TateSounds;
+import com.xcodiq.taterunner.entity.implementation.Bat;
+import com.xcodiq.taterunner.entity.implementation.Coin;
 import com.xcodiq.taterunner.entity.implementation.Player;
 import com.xcodiq.taterunner.entity.implementation.Rock;
 import com.xcodiq.taterunner.manager.implementation.EnemyManager;
@@ -23,6 +25,8 @@ import de.gurkenlabs.litiengine.Game;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class RunnerScreen extends TateGameScreen {
@@ -32,15 +36,15 @@ public final class RunnerScreen extends TateGameScreen {
 	private final Profile profile;
 
 	private final BackgroundRender backgroundRender;
-
 	private final Font gameFont, gameTextFont;
 
-	private boolean isHurt = false, highScore = false;
-	private Rock rock;
+	private final List<Coin> coins = new ArrayList<>();
+	private int coinsCollected = 0;
 
 	private Player player;
 	private BufferedImage backgroundImage;
 	private double floorYCoordinate;
+	private boolean highScore = false;
 
 	private int distanceWalked;
 	private double gameSpeed;
@@ -69,9 +73,12 @@ public final class RunnerScreen extends TateGameScreen {
 
 	@Override
 	public void render() {
+		// Play the main theme, looped
+		TateSounds.MAIN_THEME.playOnBackground();
+
 		// Check the current state and see if the game is focussed or not
 		final State currentState = this.stateManager.getCurrentState();
-		if (!Game.window().isFocusOwner() && currentState != State.PAUSED)
+		if (!Game.window().isFocusOwner() && currentState != State.PAUSED && currentState != State.DIED)
 			this.stateManager.setCurrentState(State.PAUSED);
 
 		// Render the background
@@ -80,43 +87,69 @@ public final class RunnerScreen extends TateGameScreen {
 		// Use the enemy manager to render all the enemies on the screen
 		this.enemyManager.renderAll(this);
 
-		// Render the rock
-//		this.rock.render(this);
-
 		// Render the player
 		this.player.render(this);
+
+		// Render the coins
+		for (Coin coin : this.coins) coin.render(this);
 
 		// Check for the current state to see what to do this cycle
 		switch (currentState) {
 			// Only run game progression things when current state is set to running
 			case RUNNING -> {
-				if (this.enemyManager.isColliding(this.player)) {
+				// Check if the player is hitting coins
+				for (Coin coin : this.coins) {
+					if (player.collidesWith(coin)) {
+						coin.reset();
+
+						final int coins = ThreadLocalRandom.current().nextInt(1, 4);
+						this.coinsCollected += coins;
+
+						this.profile.addCoins(coins);
+						TateSounds.PICKUP_COIN.play();
+					}
+				}
+
+				// Check if the player is hitting any enemies
+				if (this.enemyManager.hitEnemy(this.player)) {
 					// Play the hurt sound
 					TateSounds.PLAYER_HURT.play();
 
 					// Check if they have lives left, if not, set the state to died
 					if (this.player.getLives() == 1) {
+						// Check if they got a new highscore
 						if (this.distanceWalked > this.profile.getHighScore()) this.highScore = true;
-						this.stateManager.setCurrentState(State.DIED);
-					} else this.player.setLives(this.player.getLives() - 1);
 
-					// Set state to hurt
-					this.isHurt = true;
+						// Set the state to died
+						this.stateManager.setCurrentState(State.DIED);
+
+						// Give coins to the profile
+						final int coins = (int) Math.pow(this.distanceWalked, 0.8);
+						this.coinsCollected = coins;
+						this.profile.addCoins(coins);
+
+						// Play the highscore sound if they got a new highscore, otherwise play the death sound
+						if (this.highScore) TateSounds.HIGHSCORE.play();
+						else TateSounds.YOU_DIED.play();
+					} else {
+						// Lower the lives by 1, and play the hurt sound
+						this.player.setLives(this.player.getLives() - 1);
+						TateSounds.HURT.play();
+					}
+
+					// Set the player to be hurt
+					this.enemyManager.setHurting(true);
 					return;
 				}
 
-//				if (!isHurt && this.player.collidesWith(this.rock)) {
-//
-//				}
-
-				// Make sure they don't get hurt again if they already are hurt (hitting a rock)
-//				this.isHurt = this.player.collidesWith(this.rock);
+				// Check if the player is still colliding with an enemy
+				this.enemyManager.setHurting(this.enemyManager.isColliding(this.player));
 
 				// Update all the enemies
-				this.enemyManager.updateAll(this, this.player, this.gameSpeed);
+				this.enemyManager.updateAll(this.floorYCoordinate, this.gameSpeed);
 
-				// Update the rock
-//				this.updateRock();
+				// Update the coins
+				for (Coin coin : this.coins) coin.update(this.gameSpeed);
 
 				// Attempt to change the player's position while jumping
 				this.player.jump();
@@ -134,8 +167,13 @@ public final class RunnerScreen extends TateGameScreen {
 
 				// Up the gameSpeed and playerAnimationSpeed
 				if (Game.time().now() % 100 == 0) {
-					this.gameSpeed -= 0.02;
-					this.player.getSpriteAnimation().multiplyInterval(0.9995);
+					this.gameSpeed -= 0.210;
+					this.player.getSpriteAnimation().multiplyInterval(0.9899);
+				}
+
+				// Spawn random coins over the map
+				if (Game.time().now() % 185 == 0) {
+					this.spawnCoin();
 				}
 			}
 			case DIED -> {
@@ -163,6 +201,8 @@ public final class RunnerScreen extends TateGameScreen {
 				this.drawCenteredText(0, -200, this.gameTextFont, new Color(213, 213, 213),
 						80f, this.distanceWalked + "M");
 
+				this.drawCenteredText(0,-170,this.gameTextFont,
+						Color.ORANGE,30f,"! You earned " + this.coinsCollected + " coins !");
 
 				// Render desired buttons
 				this.renderButton(ExitButton.class);
@@ -230,17 +270,6 @@ public final class RunnerScreen extends TateGameScreen {
 		this.drawBackgroundImage(this.backgroundImage, backgroundRender.getNextBackgroundX());
 	}
 
-	private void updateRock() {
-		this.rock.update(this.gameSpeed);
-
-		if (this.rock.getX() < -this.rock.getWidth()) {
-			final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
-			final int randomDistance = ThreadLocalRandom.current().nextInt(600, 1750);
-			this.rock = new Rock(TateRunnerGame.GAME_WIDTH + randomDistance, this.floorYCoordinate,
-					randomSize, randomSize);
-		}
-	}
-
 	private void renderScoreboard() {
 		// Draw the rectangle
 		this.drawRectangle(10, 10, new Rectangle(300, 220),
@@ -252,12 +281,12 @@ public final class RunnerScreen extends TateGameScreen {
 		this.drawText(82, 43, Color.CYAN, 30f, "TATE RUNNER");
 
 		// Draw the coins indicator
-		this.drawText(25, 80, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.orange, 23f,
+		this.drawText(25, 80, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.ORANGE, 23f,
 				"Coins: " + this.profile.getCoins());
 		// Draw the distance indicator
-		this.drawText(25, 130, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.white, 23f,
+		this.drawText(25, 130, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.WHITE, 23f,
 				"Score: " + this.distanceWalked + "m");
-		this.drawText(25, 150, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.gray, 23f,
+		this.drawText(25, 150, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.GRAY, 23f,
 				"Highscore: " + this.profile.getHighScore() + "m");
 
 		// Draw the hearts indicator
@@ -268,6 +297,15 @@ public final class RunnerScreen extends TateGameScreen {
 			default -> null;
 		};
 		this.drawStaticImage(20, 165 * TateRunnerGame.IMAGE_SCALE, heartsImage);
+	}
+
+	private void spawnCoin() {
+		int randomDistance = ThreadLocalRandom.current().nextInt(100, 351);
+		int yMod = ThreadLocalRandom.current().nextInt(1, 4);
+		int yDiff = 0;
+		if (yMod == 1) yDiff = ThreadLocalRandom.current().nextInt(0, 51);
+		else if (yMod > 1) yDiff = ThreadLocalRandom.current().nextInt(100, 251);
+		this.coins.add(new Coin(TateRunnerGame.GAME_WIDTH + randomDistance, this.floorYCoordinate - yDiff));
 	}
 
 	private void restart() {
@@ -281,15 +319,21 @@ public final class RunnerScreen extends TateGameScreen {
 		this.player.setPauseAnimationCondition(() -> this.stateManager.getCurrentState() != State.RUNNING);
 		this.player.reset();
 
-		// Reset the entities
-		final int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
-		this.rock = new Rock(TateRunnerGame.GAME_WIDTH + 500, this.floorYCoordinate, randomSize, randomSize);
+		// Reset the enemy manager
+		this.enemyManager.reset();
+
+		// Add new enemies to the enemy list
+		int randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+		this.enemyManager.add(new Rock(TateRunnerGame.GAME_WIDTH + 500, this.floorYCoordinate, randomSize, randomSize));
+		randomSize = ThreadLocalRandom.current().nextInt(75, 125);
+		this.enemyManager.add(new Bat(TateRunnerGame.GAME_WIDTH + 2000, this.floorYCoordinate - (randomSize * 3), randomSize, randomSize));
 
 		// Reset the background and values
 		this.backgroundRender.reset();
 		this.distanceWalked = 0;
 		this.gameSpeed = -6.00;
 		this.highScore = false;
+		this.coinsCollected = 0;
 
 		// Reset all sounds from previous screens
 		TateSounds.resetSounds();

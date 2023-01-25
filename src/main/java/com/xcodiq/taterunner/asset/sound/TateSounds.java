@@ -9,7 +9,10 @@ import java.util.function.Predicate;
 public enum TateSounds implements TateSound {
 
 	MAIN_THEME("audio/main_theme.ogg"),
+	YOU_DIED("audio/you_died.wav"),
+	HIGHSCORE("audio/highscore.wav"),
 	JUMP("audio/jump.wav"),
+	HURT("audio/hurt.wav"),
 	PLAYER_HURT("audio/player_hurt.wav"),
 	PICKUP_COIN("audio/pickup_coin.wav"),
 	BUTTON_CLICK("audio/button_click.wav"),
