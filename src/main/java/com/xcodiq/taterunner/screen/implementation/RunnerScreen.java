@@ -172,7 +172,7 @@ public final class RunnerScreen extends TateGameScreen {
 				}
 
 				// Spawn random coins over the map
-				if (Game.time().now() % 185 == 0) {
+				if (Game.time().now() % 185 == 0) {//185
 					this.spawnCoin();
 				}
 			}

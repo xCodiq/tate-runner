@@ -83,7 +83,7 @@ public final class EnemyManager extends Manager {
 			int yMod = entityClass.equals(Bat.class) ? (ThreadLocalRandom.current().nextInt(1,4)) : 0;
 			int yDiff = 0;
 			if (yMod == 1) yDiff = ThreadLocalRandom.current().nextInt(0, 51);
-			else if (yMod > 1) yDiff = ThreadLocalRandom.current().nextInt(100, 151);
+			else if (yMod > 1) yDiff = ThreadLocalRandom.current().nextInt(125, 185);
 
 			return entityClass.getConstructor(double.class, double.class, int.class, int.class)
 					.newInstance(x, y - yDiff, width, height);
