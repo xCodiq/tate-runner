@@ -13,7 +13,11 @@ public enum TateImages implements TateImage {
 
 	HEART_FULL("textures/heart/heart-full.png"),
 	HEART_2LEFT("textures/heart/heart-2left.png"),
-	HEART_1LEFT("textures/heart/heart-1left.png");
+	HEART_1LEFT("textures/heart/heart-1left.png"),
+
+	ROCK("sprites/rock/rock.png"),
+
+	;
 
 	private final String path;
 

@@ -80,10 +80,10 @@ public final class EnemyManager extends Manager {
 
 	public <T extends Entity> T createNewEnemy(Class<T> entityClass, double x, double y, int width, int height) {
 		try {
-			int yMod = entityClass.equals(Bat.class) ? (ThreadLocalRandom.current().nextInt(1,4)) : 0;
+			int yMod = entityClass.equals(Bat.class) ? (ThreadLocalRandom.current().nextInt(1,3)) : 0;
 			int yDiff = 0;
-			if (yMod == 1) yDiff = ThreadLocalRandom.current().nextInt(0, 51);
-			else if (yMod > 1) yDiff = ThreadLocalRandom.current().nextInt(125, 185);
+			if (yMod == 1) yDiff = ThreadLocalRandom.current().nextInt(0, 35);
+			if (yMod > 0) yDiff = ThreadLocalRandom.current().nextInt(135, 215);
 
 			return entityClass.getConstructor(double.class, double.class, int.class, int.class)
 					.newInstance(x, y - yDiff, width, height);

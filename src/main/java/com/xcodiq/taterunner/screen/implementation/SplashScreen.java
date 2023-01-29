@@ -6,6 +6,7 @@ import com.xcodiq.taterunner.asset.font.TateFonts;
 import com.xcodiq.taterunner.asset.image.TateImages;
 import com.xcodiq.taterunner.asset.scene.TateScenes;
 import com.xcodiq.taterunner.asset.sound.TateSounds;
+import com.xcodiq.taterunner.manager.implementation.ProfileManager;
 import com.xcodiq.taterunner.manager.implementation.ScreenManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 import com.xcodiq.taterunner.screen.button.implementation.ExitButton;
@@ -79,9 +80,11 @@ public final class SplashScreen extends TateGameScreen {
 			case KeyEvent.VK_SPACE ->
 				// Switch to the Runner screen
 					this.tateRunner.getManager(ScreenManager.class).showScreen(RunnerScreen.class);
-			case KeyEvent.VK_DELETE ->
-				// Exit the actual application
-					System.exit(0);
+			case KeyEvent.VK_DELETE -> {
+				// Exit the actual application with a clear profile
+				this.tateRunner.getManager(ProfileManager.class).clearProfile();
+				System.exit(0);
+			}
 		}
 	}
 
