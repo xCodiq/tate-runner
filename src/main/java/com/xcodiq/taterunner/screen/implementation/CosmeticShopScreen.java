@@ -69,6 +69,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 		// Add the shop buttons
 		this.addButton(new CosmeticSpritesButton(496, 380,
 				button -> {
+					// Switch to the sprites menu
 					this.shopState = ShopState.SPRITES_MENU;
 					TateSounds.BUTTON_CLICK.play();
 				},
@@ -76,6 +77,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 
 		this.addButton(new CosmeticScenesButton(1120, 380,
 				button -> {
+					// Switch to the scenes menu
 					this.shopState = ShopState.SCENES_MENU;
 					TateSounds.BUTTON_CLICK.play();
 				},
@@ -100,6 +102,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 					profile.setEquippedTateSprite(sprite);
 					button.setCurrentState(ShopItemButtonState.EQUIPPED);
 
+					// Show the equipped text and play the sound
 					final String text = "! Equipped " + sprite + " !";
 					this.addScreenText(Color.CYAN, text);
 					TateSounds.EQUIP_ITEM.play();
@@ -118,6 +121,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 					this.profile.removeCoins(sprite.getPrice());
 					button.setCurrentState(ShopItemButtonState.EQUIP);
 
+					// Show the added text and play the sound
 					final String text = "! Added " + sprite + " to your sprite collection !";
 					this.addScreenText(Color.GREEN, text);
 					TateSounds.PURCHASE_ITEM.play();
@@ -147,6 +151,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 					profile.setCurrentTateScene(scene);
 					button.setCurrentState(ShopItemButtonState.EQUIPPED);
 
+					// Show the equipped text and play the sound
 					final String text = "! Equipped the " + scene + " scene !";
 					this.addScreenText(Color.CYAN, text);
 					TateSounds.EQUIP_ITEM.play();
@@ -165,6 +170,7 @@ public final class CosmeticShopScreen extends TateGameScreen {
 					this.profile.removeCoins(scene.getPrice());
 					button.setCurrentState(ShopItemButtonState.EQUIP);
 
+					// Show the added text and play the sound
 					final String text = "! Added the " + scene + " to your scene collection !";
 					this.addScreenText(Color.GREEN, text);
 					TateSounds.PURCHASE_ITEM.play();
@@ -281,24 +287,31 @@ public final class CosmeticShopScreen extends TateGameScreen {
 			this.profile.addCoins(100);
 
 			final String text = "Added 100 to your account";
-			this.addScreenText(Color.BLUE, text, 1, TimeUnit.SECONDS);
+			this.addScreenText(Color.BLUE, text);
 		} else if (keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
 			if (!this.profile.hasCoins(100)) return;
 			this.profile.removeCoins(100);
 
 			final String text = "Removed 100 to your account";
-			this.addScreenText(Color.BLUE, text, 1, TimeUnit.SECONDS);
+			this.addScreenText(Color.BLUE, text);
+		}
+
+		// Check if the escape key is pressed
+		if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			switch (this.shopState) {
+				case MAIN_MENU ->
+					// Show the splash screen again
+						tateRunner.getManager(ScreenManager.class).showScreen(SplashScreen.class);
+				case SPRITES_MENU, SCENES_MENU ->
+					// Switch the state back to main menu state
+						this.shopState = ShopState.MAIN_MENU;
+			}
 		}
 	}
 
 	private void addScreenText(Color color, String text) {
 		this.screenTexts.clear();
 		this.screenTexts.add(new ScreenText(color, text));
-	}
-
-	private void addScreenText(Color color, String text, long duration, TimeUnit timeUnit) {
-		this.screenTexts.clear();
-		this.screenTexts.add(new ScreenText(color, text), duration, timeUnit);
 	}
 
 	private enum ShopState {

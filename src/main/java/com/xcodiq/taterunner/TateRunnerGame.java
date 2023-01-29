@@ -69,13 +69,13 @@ public class TateRunnerGame implements IGame {
 		Game.info().setVersion("v0.0.1");
 
 		// Set up the game configuration
-		Game.config().graphics().setDisplayMode(DisplayMode.WINDOWED);
+		Game.config().graphics().setDisplayMode(DisplayMode.BORDERLESS);
 
 		// Initialize the Game
 		Game.init(args);
 
 		// Set the default window resolution and window icon
-		Game.window().setIcon(Resources.images().get("icon/andrew_tate_icon.jpg"));
+		Game.window().setIcon(Resources.images().get("icon/andrew_tate_icon.png"));
 
 		// Register the managers
 		this.registerManagers();

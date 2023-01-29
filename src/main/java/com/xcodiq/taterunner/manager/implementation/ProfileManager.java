@@ -8,16 +8,24 @@ import com.xcodiq.taterunner.profile.Profile;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 public final class ProfileManager extends Manager {
-	private static final String STORAGE_PATH = "/profiles/",
-			DEV_PATH = "C:\\Users\\elmar\\Documents\\Saxion\\TateRunner";
+	private static final String STORAGE_PATH = "/TateRunner/profiles/";
 	private static final File STORAGE_FOLDER;
 
 	static {
-//		final String path = ProfileManager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		STORAGE_FOLDER = new File(DEV_PATH, STORAGE_PATH);
+		try {
+			final URI uri = ProfileManager.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+			final String path = uri.resolve(".").getPath();
+
+			STORAGE_FOLDER = new File(path, STORAGE_PATH);
+		} catch (URISyntaxException e) {
+			System.exit(0);
+			throw new RuntimeException(e);
+		}
 	}
 
 	private final Gson gson;
@@ -83,6 +91,11 @@ public final class ProfileManager extends Manager {
 
 	public void saveProfile() {
 		this.saveProfile(this.profile);
+	}
+
+	public void clearProfile() {
+		this.profile = new Profile(this.profile.getName());
+		this.saveProfile();
 	}
 
 	public Profile getProfile() {

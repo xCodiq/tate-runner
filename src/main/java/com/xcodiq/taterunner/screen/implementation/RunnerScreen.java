@@ -36,10 +36,10 @@ public final class RunnerScreen extends TateGameScreen {
 	private final Profile profile;
 
 	private final BackgroundRender backgroundRender;
-	private final Font gameFont, gameTextFont;
+	private final Font primaryFont, secondaryFont;
 
 	private final List<Coin> coins = new ArrayList<>();
-	private int coinsCollected = 0;
+	private int coinsCollected;
 
 	private Player player;
 	private BufferedImage backgroundImage;
@@ -52,13 +52,14 @@ public final class RunnerScreen extends TateGameScreen {
 	public RunnerScreen(TateRunnerGame tateRunner) {
 		super(tateRunner, "Runner");
 
+		// Initialize the managers
 		this.enemyManager = tateRunner.getManager(EnemyManager.class);
 		this.stateManager = tateRunner.getManager(StateManager.class);
 		this.profile = tateRunner.getManager(ProfileManager.class).getProfile();
 
 		// Set up font
-		this.gameFont = TateFonts.PRIMARY_TITLE.toFont();
-		this.gameTextFont = TateFonts.SECONDARY_SUBTITLE.toFont();
+		this.primaryFont = TateFonts.PRIMARY_TITLE.toFont();
+		this.secondaryFont = TateFonts.SECONDARY_SUBTITLE.toFont();
 
 		// Initialize the background render coordinates
 		this.backgroundRender = new BackgroundRender(0, TateRunnerGame.WIDTH);
@@ -100,11 +101,13 @@ public final class RunnerScreen extends TateGameScreen {
 				// Check if the player is hitting coins
 				for (Coin coin : this.coins) {
 					if (player.collidesWith(coin)) {
-						coin.reset();
+						coin.reset(); // Clear the coin from the screen
 
+						// Calculate the amount of coins to add to the player
 						final int coins = ThreadLocalRandom.current().nextInt(1, 4);
 						this.coinsCollected += coins;
 
+						// Add the coins to the player
 						this.profile.addCoins(coins);
 						TateSounds.PICKUP_COIN.play();
 					}
@@ -125,7 +128,7 @@ public final class RunnerScreen extends TateGameScreen {
 
 						// Give coins to the profile
 						final int coins = (int) Math.pow(this.distanceWalked, 0.8);
-						this.coinsCollected = coins;
+						this.coinsCollected += coins;
 						this.profile.addCoins(coins);
 
 						// Play the highscore sound if they got a new highscore, otherwise play the death sound
@@ -173,7 +176,7 @@ public final class RunnerScreen extends TateGameScreen {
 
 				// Spawn random coins over the map
 				if (Game.time().now() % 185 == 0) {//185
-					this.spawnCoin();
+					this.spawnRandomCoin();
 				}
 			}
 			case DIED -> {
@@ -181,9 +184,9 @@ public final class RunnerScreen extends TateGameScreen {
 				this.drawFullscreenCover(new Color(0, 0, 0, TateColors.HIGH_BACKGROUND_ALPHA));
 
 				// Draw the game paused text on the screen
-				this.drawCenteredText(0, 5, this.gameFont, new Color(96, 0, 0), 160f, "YOU DIED!");
-				this.drawCenteredText(this.gameFont, Color.RED, 160f, "YOU DIED!");
-				this.drawCenteredAnimatedText(0, 35, 550, this.gameTextFont, new Color(213, 213, 213), 30f,
+				this.drawCenteredText(0, 5, this.primaryFont, TateColors.RED_SHADOW, 160f, "YOU DIED!");
+				this.drawCenteredText(this.primaryFont, TateColors.RED_TEXT, 160f, "YOU DIED!");
+				this.drawCenteredAnimatedText(0, 35, 550, this.secondaryFont, Color.WHITE, 30f,
 						"Press > SPACE < to start over",
 						"Press > SPACE < to start over",
 						"Press  >SPACE<  to start over");
@@ -194,15 +197,15 @@ public final class RunnerScreen extends TateGameScreen {
 				// Render the game summary, score and current high score
 				if (this.highScore) {
 					this.profile.setHighScore(this.distanceWalked);
-					this.drawCenteredText(0, -280, this.gameTextFont, new Color(252, 179, 14),
+					this.drawCenteredText(0, -280, this.secondaryFont, TateColors.HIGHSCORE_TEXT,
 							80f, "! A new High Score !");
 				}
 
-				this.drawCenteredText(0, -200, this.gameTextFont, new Color(213, 213, 213),
+				this.drawCenteredText(0, -200, this.secondaryFont, Color.WHITE,
 						80f, this.distanceWalked + "M");
 
-				this.drawCenteredText(0,-170,this.gameTextFont,
-						Color.ORANGE,30f,"! You earned " + this.coinsCollected + " coins !");
+				this.drawCenteredText(0, -170, this.secondaryFont, Color.ORANGE,
+						30f, "! You earned " + this.coinsCollected + " coins !");
 
 				// Render desired buttons
 				this.renderButton(ExitButton.class);
@@ -212,9 +215,9 @@ public final class RunnerScreen extends TateGameScreen {
 				this.drawFullscreenCover(new Color(0, 0, 0, TateColors.HIGH_BACKGROUND_ALPHA));
 
 				// Draw the game paused text on the screen
-				this.drawCenteredText(0, 5, this.gameFont, new Color(2, 96, 96), 160f, "GAME PAUSED");
-				this.drawCenteredText(this.gameFont, Color.CYAN, 160f, "GAME PAUSED");
-				this.drawCenteredAnimatedText(0, 35, 550, this.gameTextFont, new Color(213, 213, 213), 30f,
+				this.drawCenteredText(0, 5, this.primaryFont, TateColors.CYAN_SHADOW, 160f, "GAME PAUSED");
+				this.drawCenteredText(this.primaryFont, TateColors.CYAN_TEXT, 160f, "GAME PAUSED");
+				this.drawCenteredAnimatedText(0, 35, 550, this.secondaryFont, Color.WHITE, 30f,
 						"Press > ESC < to resume the game",
 						"Press > ESC < to resume the game",
 						"Press  >ESC<  to resume the game");
@@ -230,20 +233,22 @@ public final class RunnerScreen extends TateGameScreen {
 		final State currentState = this.stateManager.getCurrentState();
 		switch (currentState) {
 			case RUNNING, PAUSED -> {
+				// Check if the escape key is pressed to toggle the pause menu
 				if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					this.stateManager.setCurrentState(this.stateManager.getCurrentState() == State.RUNNING
 							? State.PAUSED : State.RUNNING);
+					return;
 				}
 
+				// Check if the game is in the running state and the space key is pressed
 				if (currentState == State.RUNNING && keyEvent.getKeyCode() == KeyEvent.VK_SPACE) {
 					if (!this.player.isJumping()) {
+						// Set the player jumping
 						this.player.setJumping(true);
+
+						// Play the jump sound
 						TateSounds.JUMP.play();
 					}
-				}
-
-				if (currentState == State.RUNNING && keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
-					this.stateManager.setCurrentState(State.DIED);
 				}
 			}
 			case DIED -> {
@@ -281,13 +286,13 @@ public final class RunnerScreen extends TateGameScreen {
 		this.drawText(82, 43, Color.CYAN, 30f, "TATE RUNNER");
 
 		// Draw the coins indicator
-		this.drawText(25, 80, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.ORANGE, 23f,
-				"Coins: " + this.profile.getCoins());
+		this.drawText(25, 80, this.secondaryFont, Color.ORANGE,
+				23f, "Coins: " + this.profile.getCoins());
 		// Draw the distance indicator
-		this.drawText(25, 130, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.WHITE, 23f,
-				"Score: " + this.distanceWalked + "m");
-		this.drawText(25, 150, TateFonts.SECONDARY_SUBTITLE.toFont(), Color.GRAY, 23f,
-				"Highscore: " + this.profile.getHighScore() + "m");
+		this.drawText(25, 130, this.secondaryFont, Color.WHITE,
+				23f, "Score: " + this.distanceWalked + "m");
+		this.drawText(25, 150, this.secondaryFont, Color.GRAY,
+				23f, "Highscore: " + this.profile.getHighScore() + "m");
 
 		// Draw the hearts indicator
 		BufferedImage heartsImage = switch (this.player.getLives()) {
@@ -299,12 +304,17 @@ public final class RunnerScreen extends TateGameScreen {
 		this.drawStaticImage(20, 165 * TateRunnerGame.IMAGE_SCALE, heartsImage);
 	}
 
-	private void spawnCoin() {
+	private void spawnRandomCoin() {
+		// Spawn a random coin at a random distance
 		int randomDistance = ThreadLocalRandom.current().nextInt(100, 351);
+
+		// Calculate the y coordinate of the coin
 		int yMod = ThreadLocalRandom.current().nextInt(1, 4);
 		int yDiff = 0;
 		if (yMod == 1) yDiff = ThreadLocalRandom.current().nextInt(0, 51);
 		else if (yMod > 1) yDiff = ThreadLocalRandom.current().nextInt(100, 251);
+
+		// Add the coin to the list
 		this.coins.add(new Coin(TateRunnerGame.GAME_WIDTH + randomDistance, this.floorYCoordinate - yDiff));
 	}
 

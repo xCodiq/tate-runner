@@ -9,15 +9,22 @@ import com.xcodiq.taterunner.entity.bound.type.CircleBoundingBox;
 import com.xcodiq.taterunner.entity.bound.type.PolygonBoundingBox;
 import com.xcodiq.taterunner.entity.bound.type.RectangleBoundingBox;
 import com.xcodiq.taterunner.logger.Logger;
+import com.xcodiq.taterunner.manager.implementation.ProfileManager;
 import com.xcodiq.taterunner.screen.TateGameScreen;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class Entity {
 	private static final int BOUNDING_BOX_MARGIN = 20;
@@ -68,22 +75,28 @@ public abstract class Entity {
 
 				try {
 					// Get the bound file location
-					final URI boundLocation = ClassLoader.getSystemResource(boundPath).toURI();
+					try (final InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(boundPath)) {
+						if (resourceAsStream == null) throw new RuntimeException("Bound file not found! (" + boundPath + ")");
 
-					// Read all the lines and map it to a list of bounding points
-					final List<BoundingPoint> boundingPoints = Files.readAllLines(Path.of(boundLocation)).stream().map(line -> {
-						// Split the line into two parts (x and y)
-						final String[] split = line.split(";");
+						// Create temp file for the bound path
+						final Path resourcePath = Files.createTempFile("tate" + System.currentTimeMillis(), "bound");
+						Files.copy(resourceAsStream, resourcePath, StandardCopyOption.REPLACE_EXISTING);
 
-						// Map to a bounding point
-						return new BoundingPoint(
-								(int) (Float.parseFloat(split[0]) * this.width),
-								(int) (Float.parseFloat(split[1]) * this.height));
-					}).toList(); // collect to in list
+						// Read all the lines and map it to a list of bounding points
+						final List<BoundingPoint> boundingPoints = Files.readAllLines(resourcePath).stream().map(line -> {
+							// Split the line into two parts (x and y)
+							final String[] split = line.split(";");
 
-					// Create a polygon bounding box
-					yield new PolygonBoundingBox(boundingPoints);
-				} catch (IOException | URISyntaxException e) {
+							// Map to a bounding point
+							return new BoundingPoint(
+									(int) (Float.parseFloat(split[0]) * this.width),
+									(int) (Float.parseFloat(split[1]) * this.height));
+						}).toList(); // collect to in list
+
+						// Create a polygon bounding box
+						yield new PolygonBoundingBox(boundingPoints);
+					}
+				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
 			}
